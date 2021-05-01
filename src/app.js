@@ -43,8 +43,14 @@ const onKeyDown = (event) => {
   else if (event.key == "ArrowLeft") {
     Keyboard.ArrowLeft = true;
   }
+  else if (event.key == "ArrowUp") {
+    Keyboard.ArrowUp = true;
+  }
   else if (event.key == " ") {
     Keyboard.Space = true;
+  }
+  else if (event.key == "z") {
+    Keyboard.z = true;
   }
 }
 window.addEventListener('keydown', onKeyDown);
@@ -56,8 +62,14 @@ const onKeyUp = (event) => {
   else if (event.key == "ArrowLeft") {
     Keyboard.ArrowLeft = false;
   }
+  else if (event.key == "ArrowUp") {
+    Keyboard.ArrowUp = false;
+  }
   else if (event.key == " ") {
     Keyboard.Space = false;
+  }
+  else if (event.key == "z") {
+    Keyboard.z = false;
   }
 }
 window.addEventListener('keyup', onKeyUp);

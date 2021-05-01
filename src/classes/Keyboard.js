@@ -7,7 +7,9 @@ class Keyboard {
   constructor() {
     this.ArrowRight = false;
     this.ArrowLeft = false;
+    this.ArrowUp = false;
     this.Space = false;
+    this.z = false
   }
 
 }

@@ -11,6 +11,10 @@ class Player extends Group {
     super();
 
     this.scene = parent;
+    
+
+    // NEW:
+    this.grounded = true
 
     this.texture = this.createTexture();
     this.material = new SpriteMaterial({map: this.texture});
@@ -65,7 +69,9 @@ class Player extends Group {
     }
 
     // update physics
-    this.velocity.y += -9.81*(1/60);
+    // this.velocity.y += -9.81*(1/60);
+    this.velocity.y += -20*(1/60);
+
 
     // update keyboard control
     if (Keyboard.ArrowRight) {
@@ -75,15 +81,31 @@ class Player extends Group {
       this.velocity.x = -5.0;
     }
     else {
-      this.velocity.x = 0.0;
+      this.velocity.x /= 1.3;
     }
 
-    if (Keyboard.Space) {
+    if (Keyboard.Space || Keyboard.ArrowUp) {
       this.velocity.y = 10.0;
+    }
+    if (Keyboard.z) {
+      this.position.x += this.velocity.x / 10;
     }
 
     // update position based on physics
-    this.position.add(this.velocity.clone().multiplyScalar(1/60));
+    let newpos = this.position.clone().add((this.velocity.clone().multiplyScalar(1/60)));
+    let newtile = this.scene.tiles[-Math.floor(newpos.y)][Math.floor(newpos.x)];
+    let currtile = this.scene.tiles[-Math.floor(this.position.y)][Math.floor(this.position.x)];
+
+    if (newtile <= 0) {
+      this.position.add(this.velocity.clone().multiplyScalar(1/60));
+    }
+    else if (currtile = newtile) {
+      this.position.x += this.velocity.x * (1/60);
+      this.velocity.y = 0
+    }
+    else {
+      this.velocity.y = 0;
+    }
   }
 
   // destroy the player by unloading texture, material, sprite, and then removing from its scene
