@@ -1,6 +1,6 @@
-import { Group, Vector3 } from 'three';
+import { Group, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
-import { Keyboard } from 'classes';
+import { TileData, Keyboard } from 'classes';
 
 
 
@@ -11,7 +11,32 @@ class Player extends Group {
     super();
 
     this.scene = parent;
-    
+
+    // physical bounding box of player
+    this.boundingBox = new Box3(
+      new Vector3(-0.39, -0.99, 0),
+      new Vector3(0.29, 0.39, 0)
+    );
+
+    // where to sample tiles for collision detection, relative to center of player
+    this.bottomChecks = [
+      new Vector3(-0.4, -1, 0),
+      new Vector3(0.3, -1, 0)
+    ];
+    this.topChecks = [
+      new Vector3(-0.4, 0.4, 0),
+      new Vector3(0.3, 0.4, 0)
+    ];
+    this.rightChecks = [
+      new Vector3(0.3, -1, 0),
+      new Vector3(0.3, 0, 0),
+      new Vector3(0.3, 0.4, 0)
+    ];
+    this.leftChecks = [
+      new Vector3(-0.4, -1, 0),
+      new Vector3(-0.4, 0, 0),
+      new Vector3(-0.4, 0.4, 0)
+    ];
 
     // NEW:
     this.grounded = true
@@ -60,8 +85,96 @@ class Player extends Group {
     this.texture.offset.y = (tilesVert-1 - offsetY)/tilesVert  + 0.5*eps/tilesVert;
   }
 
+  collide() {
+    //let minScore = 10;
+    let newPos = this.position.clone();
+
+    // ground collisions
+    for (const checkOffset of this.bottomChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        const bounds = new Box3(
+          this.position.clone().add(this.boundingBox.min),
+          this.position.clone().add(this.boundingBox.max)
+        );
+        const overlap = this.scene.overlapTile(checkPos.x, checkPos.y, bounds);
+        const overlapX = overlap.max.x - overlap.min.x;
+        const overlapY = overlap.max.y - overlap.min.y;
+        if (overlapY > 0 && overlapY < overlapX) {
+          newPos.y += overlapY;
+          break;
+        }
+      }
+    }
+
+    // ceiling collisions
+    for (const checkOffset of this.topChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        const bounds = new Box3(
+          this.position.clone().add(this.boundingBox.min),
+          this.position.clone().add(this.boundingBox.max)
+        );
+        const overlap = this.scene.overlapTile(checkPos.x, checkPos.y, bounds);
+        const overlapX = overlap.max.x - overlap.min.x;
+        const overlapY = overlap.max.y - overlap.min.y;
+        if (overlapY > 0 && overlapY < overlapX) {
+          newPos.y -= overlapY;
+          break;
+        }
+      }
+    }
+
+    // right wall collisions
+    for (const checkOffset of this.rightChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        const bounds = new Box3(
+          this.position.clone().add(this.boundingBox.min),
+          this.position.clone().add(this.boundingBox.max)
+        );
+        const overlap = this.scene.overlapTile(checkPos.x, checkPos.y, bounds);
+        const overlapX = overlap.max.x - overlap.min.x;
+        const overlapY = overlap.max.y - overlap.min.y;
+        if (overlapX > 0 && overlapX < overlapY) {
+          newPos.x -= overlapX;
+          break;
+        }
+      }
+    }
+
+    // left wall collisions
+    for (const checkOffset of this.leftChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        const bounds = new Box3(
+          this.position.clone().add(this.boundingBox.min),
+          this.position.clone().add(this.boundingBox.max)
+        );
+        const overlap = this.scene.overlapTile(checkPos.x, checkPos.y, bounds);
+        const overlapX = overlap.max.x - overlap.min.x;
+        const overlapY = overlap.max.y - overlap.min.y;
+        if (overlapX > 0 && overlapX < overlapY) {
+          newPos.x += overlapX;
+          break;
+        }
+      }
+    }
+
+    this.position.set(newPos.x, newPos.y, newPos.z);
+  }
+
   // Player update code
   update(time) {
+    // temporary animation
     if (time - this.frameLastUpdated > (1.0/this.animationFrameRate)) {
       this.currentFrame = (this.currentFrame + 1) % this.numFrames;
       this.setTextureOffset(this.currentFrame, 1);
@@ -71,7 +184,6 @@ class Player extends Group {
     // update physics
     // this.velocity.y += -9.81*(1/60);
     this.velocity.y += -20*(1/60);
-
 
     // update keyboard control
     if (Keyboard.ArrowRight) {
@@ -91,21 +203,46 @@ class Player extends Group {
       this.position.x += this.velocity.x / 10;
     }
 
+
+    // save start position so we can compare final position after velocity, collisions
+    const startPos = this.position.clone();
+
     // update position based on physics
+    this.position.add(this.velocity.clone().multiplyScalar(1/60));
+
+    // if intersecting tiles, don't
+    this.collide();
+
+    // compare final position with collisions to the starting position to find true velocity
+    const realPos = this.position.clone();
+    const realVelocity = realPos.sub(startPos).multiplyScalar(60);
+
+    // if real velocity is smaller than intended velocity, keep the real velocity
+    // (if the player bumps their head and stops, the vertical velocity will now be 0)
+    if (Math.abs(this.velocity.x) > Math.abs(realVelocity.x)) {
+      this.velocity.x = realVelocity.x;
+    }
+    if (Math.abs(this.velocity.y) > Math.abs(realVelocity.y)) {
+      this.velocity.y = realVelocity.y;
+    }
+
+    /*
     let newpos = this.position.clone().add((this.velocity.clone().multiplyScalar(1/60)));
     let newtile = this.scene.tiles[-Math.floor(newpos.y)][Math.floor(newpos.x)];
     let currtile = this.scene.tiles[-Math.floor(this.position.y)][Math.floor(this.position.x)];
 
-    if (newtile <= 0) {
+    if (newtile == 0) {
       this.position.add(this.velocity.clone().multiplyScalar(1/60));
     }
-    else if (currtile = newtile) {
+    else if (currtile == newtile) {
       this.position.x += this.velocity.x * (1/60);
       this.velocity.y = 0
     }
     else {
       this.velocity.y = 0;
     }
+    */
+
   }
 
   // destroy the player by unloading texture, material, sprite, and then removing from its scene

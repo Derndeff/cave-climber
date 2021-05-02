@@ -17,6 +17,17 @@ class TileData {
     this.createMaterialFromTilemap(1, tileMapSource, 0, 1); // tile type 1
     this.createMaterialFromTilemap(2, tileMapSource, 1, 0); // tile type 2
     this.createMaterialFromTilemap(3, tileMapSource, 1, 1); // tile type 3
+
+    // collision type 0: no collision
+    // collision type 1: full collision
+    // collision type 2: platform collision
+    this.collisionTypes = new Map();
+
+    this.collisionTypes.set(-1, 1); // -1 specifies the "tile" type beyond map bounds
+    this.collisionTypes.set(0, 0);
+    this.collisionTypes.set(1, 1);
+    this.collisionTypes.set(2, 1);
+    this.collisionTypes.set(3, 1);
   }
 
   // given a souce tilemap, generate a material of the offsetX, offsetY tile
@@ -47,6 +58,11 @@ class TileData {
   // access the material map, return the material for a tile type
   getMaterial(key) {
     return this.materials.get(key);
+  }
+
+  // return material type of a tile type
+  getCollisionType(key) {
+    return this.collisionTypes.get(key);
   }
 }
 

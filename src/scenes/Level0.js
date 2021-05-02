@@ -1,4 +1,4 @@
-import { Scene, Color, OrthographicCamera, Vector3 } from 'three';
+import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';
@@ -66,6 +66,32 @@ class Level0 extends Scene {
         // Load in player at position 10, 10. Player constructor handles everything
         this.player = new Player(this);
         this.player.position.set(9, -9, 2);
+    }
+
+    // return the integer tile type at an unrounded position
+    getTileAt(x, y) {
+      const roundX = Math.floor(x);
+      const roundY = Math.floor(-y);
+      if (roundX < 0 || roundX >= this.tileWidth || roundY < 0 || roundY >= this.tileHeight) {
+        return -1;
+      }
+      else {
+        return this.tiles[roundY][roundX];
+      }
+    }
+
+    // given unrounded position and a bounding box, return the overlap between
+    // the tile at the position
+    overlapTile(x, y, boundingBox) {
+      let tileBox = new Box3(
+        new Vector3(Math.floor(x), Math.floor(y), 0),
+        new Vector3(Math.ceil(x), Math.ceil(y), 0)
+      );
+      tileBox.min.x = Math.max(tileBox.min.x, boundingBox.min.x);
+      tileBox.min.y = Math.max(tileBox.min.y, boundingBox.min.y);
+      tileBox.max.x = Math.min(tileBox.max.x, boundingBox.max.x);
+      tileBox.max.y = Math.min(tileBox.max.y, boundingBox.max.y);
+      return tileBox;
     }
 
     // generates sprites for each tile specified by the map of the level
