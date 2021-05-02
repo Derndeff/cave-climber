@@ -14,28 +14,43 @@ class Player extends Group {
 
     // physical bounding box of player
     this.boundingBox = new Box3(
-      new Vector3(-0.4, -1, 0),
-      new Vector3(0.3, 0.4, 0)
+      new Vector3(-0.5, -1, 0),
+      new Vector3(0.3, 0.2, 0)
     );
 
     // where to sample tiles for collision detection, relative to center of player
     this.bottomChecks = [
-      new Vector3(-0.4, -1, 0),
+      new Vector3(-0.5, -1, 0),
       new Vector3(0.3, -1, 0)
     ];
     this.topChecks = [
-      new Vector3(-0.4, 0.4, 0),
-      new Vector3(0.3, 0.4, 0)
+      new Vector3(-0.5, 0.2, 0),
+      new Vector3(0.3, 0.2, 0)
     ];
     this.rightChecks = [
       new Vector3(0.3, -1, 0),
       new Vector3(0.3, 0, 0),
-      new Vector3(0.3, 0.4, 0)
+      new Vector3(0.3, 0.2, 0)
     ];
     this.leftChecks = [
-      new Vector3(-0.4, -1, 0),
-      new Vector3(-0.4, 0, 0),
-      new Vector3(-0.4, 0.4, 0)
+      new Vector3(-0.5, -1, 0),
+      new Vector3(-0.5, 0, 0),
+      new Vector3(-0.5, 0.2, 0)
+    ];
+
+    this.groundChecks = [
+      new Vector3(-0.45, -1.1, 0),
+      new Vector3(0.35, -1.1, 0)
+    ];
+    this.rightWallChecks = [
+      new Vector3(0.4, -0.9, 0),
+      new Vector3(0.4, 0, 0),
+      new Vector3(0.4, 0.1, 0)
+    ];
+    this.leftWallChecks = [
+      new Vector3(-0.6, -0.9, 0),
+      new Vector3(-0.6, 0, 0),
+      new Vector3(-0.6, 0.1, 0)
     ];
 
     // physical states of character
@@ -93,9 +108,6 @@ class Player extends Group {
   collide() {
     //let minScore = 10;
     let newPos = this.position.clone();
-    let groundedCheck = false;
-    let rightWallCheck = false;
-    let leftWallCheck = false;
 
     // ground collisions
     for (const checkOffset of this.bottomChecks) {
@@ -111,7 +123,6 @@ class Player extends Group {
         const overlapX = overlap.max.x - overlap.min.x;
         const overlapY = overlap.max.y - overlap.min.y;
         if (overlapY > 0 && overlapY < overlapX) {
-          groundedCheck = true;
           newPos.y += overlapY;
           break;
         }
@@ -152,7 +163,6 @@ class Player extends Group {
         const overlapX = overlap.max.x - overlap.min.x;
         const overlapY = overlap.max.y - overlap.min.y;
         if (overlapX > 0 && overlapX < overlapY) {
-          rightWallCheck = true;
           newPos.x -= overlapX;
           break;
         }
@@ -173,7 +183,6 @@ class Player extends Group {
         const overlapX = overlap.max.x - overlap.min.x;
         const overlapY = overlap.max.y - overlap.min.y;
         if (overlapX > 0 && overlapX < overlapY) {
-          leftWallCheck = true;
           newPos.x += overlapX;
           break;
         }
@@ -181,9 +190,67 @@ class Player extends Group {
     }
 
     this.position.set(newPos.x, newPos.y, newPos.z);
-    this.grounded = groundedCheck;
-    this.rightWall = rightWallCheck;
-    this.leftWall = leftWallCheck;
+  }
+
+  physicsIncrement(numIncrements, deltaTime) {
+    for (let i = 0; i < numIncrements; i++) {
+      // save start position so we can compare final position after velocity, collisions
+      const startPos = this.position.clone();
+      // update position based on physics
+      this.position.add(this.velocity.clone().multiplyScalar(deltaTime));
+      // if intersecting tiles, don't
+      this.collide();
+      // compare final position with collisions to the starting position to find true velocity
+      const realPos = this.position.clone();
+      const realVelocity = realPos.sub(startPos).multiplyScalar(1/deltaTime);
+      // if real velocity is smaller than intended velocity, keep the real velocity
+      // (if the player bumps their head and stops, the vertical velocity will now be 0)
+      if (Math.abs(this.velocity.x) > Math.abs(realVelocity.x)) {
+        this.velocity.x = realVelocity.x;
+      }
+      if (Math.abs(this.velocity.y) > Math.abs(realVelocity.y)) {
+        this.velocity.y = realVelocity.y;
+      }
+    }
+  }
+
+  checkGround() {
+    for (const checkOffset of this.groundChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  checkRightWall() {
+    for (const checkOffset of this.rightWallChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  checkLeftWall() {
+    for (const checkOffset of this.leftWallChecks) {
+      const checkPos = this.position.clone().add(checkOffset);
+      const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
+      const collisionType = TileData.getCollisionType(tile);
+      if (collisionType == 1) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Player update code
@@ -197,17 +264,17 @@ class Player extends Group {
 
     // update physics
     // this.velocity.y += -9.81*(1/60);
-    this.velocity.y = Math.max(this.velocity.y-30*(1/60), -15);
+    this.velocity.y = Math.max(this.velocity.y-50*(1/60), -15);
 
     // update keyboard control
     if (Keyboard.ArrowRight) {
       if (!this.rightWall) {
-        this.velocity.x = Math.min(this.velocity.x + 0.5, 5.0);
+        this.velocity.x = Math.min(this.velocity.x + 0.8, 5.0);
       }
     }
     else if (Keyboard.ArrowLeft) {
       if (!this.leftWall) {
-        this.velocity.x = Math.max(this.velocity.x - 0.5, -5.0);
+        this.velocity.x = Math.max(this.velocity.x - 0.8, -5.0);
       }
     }
     else {
@@ -217,15 +284,15 @@ class Player extends Group {
     if (Keyboard.Space || Keyboard.ArrowUp) {
       if (!this.prevJump) {
         if (this.grounded) {
-          this.velocity.y = 15.0;
+          this.velocity.y = 20.0;
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
-          this.velocity.y = 10.0;
+          this.velocity.y = 15.0;
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
-          this.velocity.y = 10.0;
+          this.velocity.y = 15.0;
         }
       }
       this.prevJump = true;
@@ -237,28 +304,11 @@ class Player extends Group {
       this.position.x += this.velocity.x / 10;
     }
 
+    this.physicsIncrement(5, 1/(5*60));
 
-    // save start position so we can compare final position after velocity, collisions
-    const startPos = this.position.clone();
-
-    // update position based on physics
-    this.position.add(this.velocity.clone().multiplyScalar(1/60));
-
-    // if intersecting tiles, don't
-    this.collide();
-
-    // compare final position with collisions to the starting position to find true velocity
-    const realPos = this.position.clone();
-    const realVelocity = realPos.sub(startPos).multiplyScalar(60);
-
-    // if real velocity is smaller than intended velocity, keep the real velocity
-    // (if the player bumps their head and stops, the vertical velocity will now be 0)
-    if (Math.abs(this.velocity.x) > Math.abs(realVelocity.x)) {
-      this.velocity.x = realVelocity.x;
-    }
-    if (Math.abs(this.velocity.y) > Math.abs(realVelocity.y)) {
-      this.velocity.y = realVelocity.y;
-    }
+    this.grounded = this.checkGround();
+    this.rightWall = this.checkRightWall();
+    this.leftWall = this.checkLeftWall();
 
     /*
     let newpos = this.position.clone().add((this.velocity.clone().multiplyScalar(1/60)));
