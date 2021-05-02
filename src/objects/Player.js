@@ -14,8 +14,8 @@ class Player extends Group {
 
     // physical bounding box of player
     this.boundingBox = new Box3(
-      new Vector3(-0.39, -0.99, 0),
-      new Vector3(0.29, 0.39, 0)
+      new Vector3(-0.4, -1, 0),
+      new Vector3(0.3, 0.4, 0)
     );
 
     // where to sample tiles for collision detection, relative to center of player
@@ -38,8 +38,13 @@ class Player extends Group {
       new Vector3(-0.4, 0.4, 0)
     ];
 
-    // NEW:
-    this.grounded = true
+    // physical states of character
+    this.grounded = false;
+    this.rightWall = false;
+    this.leftWall = false;
+
+    // if jump button was active last frame
+    this.prevJump = false;
 
     this.texture = this.createTexture();
     this.material = new SpriteMaterial({map: this.texture});
@@ -88,6 +93,9 @@ class Player extends Group {
   collide() {
     //let minScore = 10;
     let newPos = this.position.clone();
+    let groundedCheck = false;
+    let rightWallCheck = false;
+    let leftWallCheck = false;
 
     // ground collisions
     for (const checkOffset of this.bottomChecks) {
@@ -103,6 +111,7 @@ class Player extends Group {
         const overlapX = overlap.max.x - overlap.min.x;
         const overlapY = overlap.max.y - overlap.min.y;
         if (overlapY > 0 && overlapY < overlapX) {
+          groundedCheck = true;
           newPos.y += overlapY;
           break;
         }
@@ -143,6 +152,7 @@ class Player extends Group {
         const overlapX = overlap.max.x - overlap.min.x;
         const overlapY = overlap.max.y - overlap.min.y;
         if (overlapX > 0 && overlapX < overlapY) {
+          rightWallCheck = true;
           newPos.x -= overlapX;
           break;
         }
@@ -163,6 +173,7 @@ class Player extends Group {
         const overlapX = overlap.max.x - overlap.min.x;
         const overlapY = overlap.max.y - overlap.min.y;
         if (overlapX > 0 && overlapX < overlapY) {
+          leftWallCheck = true;
           newPos.x += overlapX;
           break;
         }
@@ -170,6 +181,9 @@ class Player extends Group {
     }
 
     this.position.set(newPos.x, newPos.y, newPos.z);
+    this.grounded = groundedCheck;
+    this.rightWall = rightWallCheck;
+    this.leftWall = leftWallCheck;
   }
 
   // Player update code
@@ -183,21 +197,41 @@ class Player extends Group {
 
     // update physics
     // this.velocity.y += -9.81*(1/60);
-    this.velocity.y += -20*(1/60);
+    this.velocity.y = Math.max(this.velocity.y-30*(1/60), -15);
 
     // update keyboard control
     if (Keyboard.ArrowRight) {
-      this.velocity.x = 5.0;
+      if (!this.rightWall) {
+        this.velocity.x = Math.min(this.velocity.x + 0.5, 5.0);
+      }
     }
     else if (Keyboard.ArrowLeft) {
-      this.velocity.x = -5.0;
+      if (!this.leftWall) {
+        this.velocity.x = Math.max(this.velocity.x - 0.5, -5.0);
+      }
     }
     else {
-      this.velocity.x /= 1.3;
+      this.velocity.x /= 1.2;
     }
 
     if (Keyboard.Space || Keyboard.ArrowUp) {
-      this.velocity.y = 10.0;
+      if (!this.prevJump) {
+        if (this.grounded) {
+          this.velocity.y = 15.0;
+        }
+        else if (this.rightWall) {
+          this.velocity.x = -10.0;
+          this.velocity.y = 10.0;
+        }
+        else if (this.leftWall) {
+          this.velocity.x = 10.0;
+          this.velocity.y = 10.0;
+        }
+      }
+      this.prevJump = true;
+    }
+    else {
+      this.prevJump = false;
     }
     if (Keyboard.z) {
       this.position.x += this.velocity.x / 10;
