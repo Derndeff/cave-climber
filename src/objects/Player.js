@@ -299,6 +299,9 @@ class Player extends Group {
     }
     else {
       this.prevJump = false;
+      if (this.velocity.y > 0) {
+        this.velocity.y -= 1
+      }
     }
     if (Keyboard.z) {
       this.position.x += this.velocity.x / 10;
