@@ -266,11 +266,11 @@ class Player extends Group {
     // update physics
 
     // gravity
-    this.velocity.y = Math.max(this.velocity.y-50*(1/60), -20);
+    this.velocity.y = Math.max(this.velocity.y-60*(1/60), -20);
 
 
     let moveAccel = 1;
-    if (!this.grounded) moveAccel = 0.6;
+    if (!this.grounded) moveAccel = 0.5;
 
     // update keyboard control
     if (Keyboard.ArrowRight) {
@@ -278,7 +278,7 @@ class Player extends Group {
         this.velocity.x = Math.min(this.velocity.x + moveAccel, 6.0);
       }
       else if (this.velocity.y < 0) {
-        this.velocity.y *= 0.9;
+        this.velocity.y *= 0.88;
       }
     }
     else if (Keyboard.ArrowLeft) {
@@ -286,7 +286,7 @@ class Player extends Group {
         this.velocity.x = Math.max(this.velocity.x - moveAccel, -6.0);
       }
       else if (this.velocity.y < 0) {
-        this.velocity.y *= 0.9;
+        this.velocity.y *= 0.88;
       }
     }
     else if (this.grounded) {
