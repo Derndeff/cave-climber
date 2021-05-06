@@ -40,7 +40,7 @@ class Player extends Group {
 
     this.groundChecks = [
       new Vector3(-0.45, -1.1, 0),
-      new Vector3(0.35, -1.1, 0)
+      new Vector3(0.25, -1.1, 0)
     ];
     this.rightWallChecks = [
       new Vector3(0.4, -0.9, 0),
@@ -60,6 +60,7 @@ class Player extends Group {
 
     // if jump button was active last frame
     this.prevJump = false;
+    this.jumpStartTime = 0;
 
     this.texture = this.createTexture();
     this.material = new SpriteMaterial({map: this.texture});
@@ -263,26 +264,38 @@ class Player extends Group {
     }
 
     // update physics
-    // this.velocity.y += -9.81*(1/60);
-    this.velocity.y = Math.max(this.velocity.y-50*(1/60), -15);
+
+    // gravity
+    this.velocity.y = Math.max(this.velocity.y-50*(1/60), -20);
+
+
+    let moveAccel = 1;
+    if (!this.grounded) moveAccel = 0.6;
 
     // update keyboard control
     if (Keyboard.ArrowRight) {
       if (!this.rightWall) {
-        this.velocity.x = Math.min(this.velocity.x + 0.8, 5.0);
+        this.velocity.x = Math.min(this.velocity.x + moveAccel, 6.0);
+      }
+      else if (this.velocity.y < 0) {
+        this.velocity.y *= 0.9;
       }
     }
     else if (Keyboard.ArrowLeft) {
       if (!this.leftWall) {
-        this.velocity.x = Math.max(this.velocity.x - 0.8, -5.0);
+        this.velocity.x = Math.max(this.velocity.x - moveAccel, -6.0);
+      }
+      else if (this.velocity.y < 0) {
+        this.velocity.y *= 0.9;
       }
     }
-    else {
-      this.velocity.x /= 1.2;
+    else if (this.grounded) {
+      this.velocity.x *= 0.7;
     }
 
     if (Keyboard.Space || Keyboard.ArrowUp) {
       if (!this.prevJump) {
+        this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
         }
@@ -298,9 +311,10 @@ class Player extends Group {
       this.prevJump = true;
     }
     else {
+      const jumpDuration = time - this.jumpStartTime;
       this.prevJump = false;
-      if (this.velocity.y > 0) {
-        this.velocity.y -= 1
+      if (jumpDuration < 0.3 && this.velocity.y > 0) {
+        this.velocity.y -= (0.3 - jumpDuration)*10;
       }
     }
     if (Keyboard.z) {

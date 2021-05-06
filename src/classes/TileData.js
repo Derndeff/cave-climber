@@ -12,11 +12,11 @@ class TileData {
     // where "key" is an integer specifying the tile type
     this.materials = new Map();
 
-    const tileMapSource = "./src/images/dumb_tiles.png";
-    this.createMaterialFromTilemap(0, tileMapSource, 0, 0); // tile type 0
-    this.createMaterialFromTilemap(1, tileMapSource, 0, 1); // tile type 1
-    this.createMaterialFromTilemap(2, tileMapSource, 1, 0); // tile type 2
-    this.createMaterialFromTilemap(3, tileMapSource, 1, 1); // tile type 3
+    const tileMapSource = "./src/images/tile_map.png";
+    this.createMaterialFromTilemap(0, tileMapSource, 88, 58); // tile type 0
+    this.createMaterialFromTilemap(1, tileMapSource, 76, 40); // tile type 1
+    this.createMaterialFromTilemap(2, tileMapSource, 75, 40); // tile type 2
+    this.createMaterialFromTilemap(3, tileMapSource, 77, 40); // tile type 3
 
     // collision type 0: no collision
     // collision type 1: full collision
@@ -33,8 +33,8 @@ class TileData {
   // given a souce tilemap, generate a material of the offsetX, offsetY tile
   createMaterialFromTilemap(key, source, offsetX, offsetY) {
 
-    const tilesHoriz = 8;
-    const tilesVert = 8;
+    const tilesHoriz = 128;
+    const tilesVert = 128;
 
     // This sucks... we have to sample a square slightly smaller than the tile,
     // otherwise visible lines show up from rounding issues. Set eps to 0.0
