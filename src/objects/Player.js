@@ -1,6 +1,7 @@
 import { Group, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, Keyboard } from 'classes';
+import { PlayerSprites } from 'images';
 
 
 
@@ -92,7 +93,7 @@ class Player extends Group {
 
     const eps = 0;
 
-    const texture = new TextureLoader().load("./src/images/character.png");
+    const texture = new TextureLoader().load(PlayerSprites);
     texture.magFilter = NearestFilter;
     texture.wrapS = texture.wrapT = RepeatWrapping;
     texture.repeat.set(1/tilesHoriz - (eps/tilesHoriz), 1.0/tilesVert - (eps/tilesVert));

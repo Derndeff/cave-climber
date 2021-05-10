@@ -1,5 +1,5 @@
 import { TextureLoader, SpriteMaterial, RepeatWrapping, NearestFilter } from 'three';
-
+import { CaveTileset, OldTileset } from 'images';
 
 
 // Singleton class where information on a tile type can be found
@@ -12,8 +12,8 @@ class TileData {
     // where "key" is an integer specifying the tile type
     this.materials = new Map();
 
-    const tileMapSource = "./src/images/cave_tileset.png";
-    const oldSource = "./src/images/tile_map.png";
+    const tileMapSource = CaveTileset;
+    const oldSource = OldTileset;
     this.createMaterialFromTilemap(0, tileMapSource, 8, 8, 3, 0); // tile type 0, air
     this.createMaterialFromTilemap(1, tileMapSource, 8, 8, 1, 1); // tile type 1, wall middle
     this.createMaterialFromTilemap(2, tileMapSource, 8, 8, 0, 1); // tile type 2, wall left
