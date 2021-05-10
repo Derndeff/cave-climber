@@ -12,14 +12,20 @@ class TileData {
     // where "key" is an integer specifying the tile type
     this.materials = new Map();
 
-    const tileMapSource = "./src/images/tile_map.png";
-    this.createMaterialFromTilemap(0, tileMapSource, 88, 58); // tile type 0, air
-    this.createMaterialFromTilemap(1, tileMapSource, 76, 40); // tile type 1, wall middle
-    this.createMaterialFromTilemap(2, tileMapSource, 75, 40); // tile type 2, wall left
-    this.createMaterialFromTilemap(3, tileMapSource, 77, 40); // tile type 3, wall right
-    this.createMaterialFromTilemap(4, tileMapSource, 41, 44); // tile type 4, vertical spike
+    const tileMapSource = "./src/images/cave_tileset.png";
+    this.createMaterialFromTilemap(0, tileMapSource, 3, 0); // tile type 0, air
+    this.createMaterialFromTilemap(1, tileMapSource, 1, 1); // tile type 1, wall middle
+    this.createMaterialFromTilemap(2, tileMapSource, 0, 1); // tile type 2, wall left
+    this.createMaterialFromTilemap(3, tileMapSource, 2, 1); // tile type 3, wall right
+    this.createMaterialFromTilemap(4, tileMapSource, 0, 3); // tile type 4, vertical spike
     this.createMaterialFromTilemap(5, tileMapSource, 44, 8); // tile type 4, chest
     this.createMaterialFromTilemap(6, tileMapSource, 44, 9); // tile type 4, open chest
+    this.createMaterialFromTilemap(7, tileMapSource, 1, 0); // tile type 3, wall top
+    this.createMaterialFromTilemap(8, tileMapSource, 1, 2); // tile type 3, wall bottom
+    this.createMaterialFromTilemap(9, tileMapSource, 0, 0); // tile type 3, wall top left
+    this.createMaterialFromTilemap(10, tileMapSource, 2, 0); // tile type 3, wall top right
+    this.createMaterialFromTilemap(11, tileMapSource, 0, 2); // tile type 3, wall bottom left
+    this.createMaterialFromTilemap(12, tileMapSource, 2, 2); // tile type 3, wall bottom right
 
     // collision type 0: no collision
     // collision type 1: full collision
@@ -36,6 +42,12 @@ class TileData {
     this.collisionTypes.set(4, 0);
     this.collisionTypes.set(5, 0);
     this.collisionTypes.set(6, 0);
+    this.collisionTypes.set(7, 1);
+    this.collisionTypes.set(8, 1);
+    this.collisionTypes.set(9, 1);
+    this.collisionTypes.set(10, 1);
+    this.collisionTypes.set(11, 1);
+    this.collisionTypes.set(12, 1);
 
 
 
@@ -47,6 +59,12 @@ class TileData {
     this.spikeTypes.set(4, 1);
     this.spikeTypes.set(5, 0);
     this.spikeTypes.set(6, 0);
+    this.spikeTypes.set(7, 0);
+    this.spikeTypes.set(8, 0);
+    this.spikeTypes.set(9, 0);
+    this.spikeTypes.set(10, 0);
+    this.spikeTypes.set(11, 0);
+    this.spikeTypes.set(12, 0);
 
 
     this.chestTypes.set(-1, 0); // -1 specifies the "tile" type beyond map bounds
@@ -57,6 +75,12 @@ class TileData {
     this.chestTypes.set(4, 0);
     this.chestTypes.set(5, 1);
     this.chestTypes.set(6, 0);
+    this.chestTypes.set(7, 0);
+    this.chestTypes.set(8, 0);
+    this.chestTypes.set(9, 0);
+    this.chestTypes.set(10, 0);
+    this.chestTypes.set(11, 0);
+    this.chestTypes.set(12, 0);
 
 
   }
@@ -64,13 +88,13 @@ class TileData {
   // given a souce tilemap, generate a material of the offsetX, offsetY tile
   createMaterialFromTilemap(key, source, offsetX, offsetY) {
 
-    const tilesHoriz = 128;
-    const tilesVert = 128;
+    const tilesHoriz = 8;
+    const tilesVert = 8;
 
     // This sucks... we have to sample a square slightly smaller than the tile,
     // otherwise visible lines show up from rounding issues. Set eps to 0.0
     // to find out lol. An eps of 0.03 cuts out 3% of the tile's width and height
-    const eps = 0.0;
+    const eps = 0.03;
 
     const texture = new TextureLoader().load(source);
     texture.magFilter = NearestFilter;
