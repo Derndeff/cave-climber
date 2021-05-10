@@ -1,15 +1,15 @@
-import { Scene, Color, OrthographicCamera, Vector3 } from 'three';
+import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';
 
-class Level1 extends Scene {
+class Level0 extends Scene {
     constructor() {
         // Call parent Scene() constructor
         super();
 
         this.tileWidth = 36;
-        this.tileHeight = 15;
+        this.tileHeight = 30;
 
         // Set up camera. Camera is tied to the scene itself so we can have different
         // levels of different sizes or custom camera code
@@ -42,38 +42,77 @@ class Level1 extends Scene {
         // the player
         this.player = undefined;
 
+        this.tiles =[
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,1,1,1,1,3,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [3,0,0,0,0,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,1,1,1,3,0,0,0],
+          [3,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,3,0,0,0,0,0,0,0,2,1,1,1,1,1,3,0,0,0],
+          [1,1,1,1,1,3,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [3,0,0,0,0,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,1,1,1,3,0,0,0],
+          [3,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,3,0,0,0,0,0,0,0,2,1,1,1,1,1,3,0,0,0],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
         // Create level map
         this.createLevelMap();
 
         // Load in player at position 10, 10. Player constructor handles everything
         this.player = new Player(this);
-        this.player.position.set(10, -10, 2);
+        this.player.position.set(2, -13, 2);
+    }
+
+    // return the integer tile type at an unrounded position
+    getTileAt(x, y) {
+      const roundX = Math.floor(x);
+      const roundY = Math.floor(-y);
+      if (roundX < 0 || roundX >= this.tileWidth || roundY < 0 || roundY >= this.tileHeight) {
+        return -1;
+      }
+      else {
+        return this.tiles[roundY][roundX];
+      }
+    }
+
+    // given unrounded position and a bounding box, return the overlap between
+    // the tile at the position
+    overlapTile(x, y, boundingBox) {
+      let tileBox = new Box3(
+        new Vector3(Math.floor(x), Math.floor(y), 0),
+        new Vector3(Math.ceil(x), Math.ceil(y), 0)
+      );
+      tileBox.min.x = Math.max(tileBox.min.x, boundingBox.min.x);
+      tileBox.min.y = Math.max(tileBox.min.y, boundingBox.min.y);
+      tileBox.max.x = Math.min(tileBox.max.x, boundingBox.max.x);
+      tileBox.max.y = Math.min(tileBox.max.y, boundingBox.max.y);
+      return tileBox;
     }
 
     // generates sprites for each tile specified by the map of the level
     createLevelMap() {
-      const tiles = [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [3,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,2,3,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,2,3,0,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,2,3,0,0,0,0,2,1,1,1,1,3,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,2],
-        [3,0,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1],
-        [3,0,0,0,2,3,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1],
-        [3,0,0,0,0,0,0,0,0,0,2,3,0,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1],
-        [3,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,2,1,1,1,1,1],
-        [3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,2,1,1,1,3,0,0,0,0,0,2,1,1,1,1,1,1,1],
-        [3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-      ];
-
-      for (let i = 0; i < tiles.length; i++) {
-        for (let j = 0; j < tiles[0].length; j++) {
+      for (let i = 0; i < this.tiles.length; i++) {
+        for (let j = 0; j < this.tiles[0].length; j++) {
           // grab the material for the given tile using the TileData class (very easy)
-          const sprite = new Sprite(TileData.getMaterial(tiles[i][j]));
+          const sprite = new Sprite(TileData.getMaterial(this.tiles[i][j]));
 
           // tile position is negative in the y-axis... we may want to change
           // this early on, but for now it makes it so that the level matches the
@@ -122,4 +161,4 @@ class Level1 extends Scene {
 
 }
 
-export default Level1;
+export default Level0;

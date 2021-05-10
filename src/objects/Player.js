@@ -28,13 +28,13 @@ class Player extends Group {
       new Vector3(0.3, 0.2, 0)
     ];
     this.rightChecks = [
-      new Vector3(0.3, -1, 0),
       new Vector3(0.3, 0, 0),
+      new Vector3(0.3, -1, 0),
       new Vector3(0.3, 0.2, 0)
     ];
     this.leftChecks = [
-      new Vector3(-0.5, -1, 0),
       new Vector3(-0.5, 0, 0),
+      new Vector3(-0.5, -1, 0),
       new Vector3(-0.5, 0.2, 0)
     ];
 
@@ -61,6 +61,9 @@ class Player extends Group {
     // if jump button was active last frame
     this.prevJump = false;
     this.jumpStartTime = 0;
+
+    // if special interaction occurs:
+    // this.repeatCollisions = true;
 
     this.texture = this.createTexture();
     this.material = new SpriteMaterial({map: this.texture});
@@ -115,6 +118,27 @@ class Player extends Group {
       const checkPos = this.position.clone().add(checkOffset);
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
+      const spikeType = TileData.getSpikeType(tile);
+      const chestType = TileData.getChestType(tile);
+      if (chestType != 0) {
+        const sprite = new Sprite(TileData.getMaterial(6));
+        const spriteName = String(-Math.floor(checkPos.y)) + ' ' + String(Math.floor(checkPos.x));
+        sprite.position.set(Math.floor(checkPos.x) + 0.5, Math.floor(checkPos.y) - 0.5, 0);
+        var object = this.scene.getObjectByName(spriteName);
+        console.log(spriteName)
+        this.scene.remove(object);
+        sprite.name = spriteName;
+        this.scene.add(sprite);
+        this.scene.setTileAt(checkPos.x, checkPos.y, 6)
+        // this.scene.tiles[-Math.floor(checkPos.y), Math.floor(checkPos.x)] = 1;
+        // tile = 0;
+        // this.repeatCollisions = false;
+        // break;
+      }
+      if (spikeType != 0) {
+        this.position.set(2, -13, 2);        
+        return;
+      }
       if (collisionType == 1) {
         const bounds = new Box3(
           this.position.clone().add(this.boundingBox.min),
@@ -135,6 +159,27 @@ class Player extends Group {
       const checkPos = this.position.clone().add(checkOffset);
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
+      const spikeType = TileData.getSpikeType(tile);
+      const chestType = TileData.getChestType(tile);
+      if (chestType != 0) {
+        const sprite = new Sprite(TileData.getMaterial(6));
+        const spriteName = String(-Math.floor(checkPos.y)) + ' ' + String(Math.floor(checkPos.x));
+        sprite.position.set(Math.floor(checkPos.x) + 0.5, Math.floor(checkPos.y) - 0.5, 0);
+        var object = this.scene.getObjectByName(spriteName);
+        console.log(spriteName)
+        this.scene.remove(object);
+        sprite.name = spriteName;
+        this.scene.add(sprite);
+        this.scene.setTileAt(checkPos.x, checkPos.y, 6)
+        // this.scene.tiles[-Math.floor(checkPos.y), Math.floor(checkPos.x)] = 1;
+        // tile = 0;
+        // this.repeatCollisions = false;
+        // break;
+      }
+      if (spikeType != 0) {
+        this.position.set(2, -13, 2);
+        return;
+      }
       if (collisionType == 1) {
         const bounds = new Box3(
           this.position.clone().add(this.boundingBox.min),
@@ -155,6 +200,27 @@ class Player extends Group {
       const checkPos = this.position.clone().add(checkOffset);
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
+      const spikeType = TileData.getSpikeType(tile);
+      const chestType = TileData.getChestType(tile);
+      if (chestType != 0) {
+        const sprite = new Sprite(TileData.getMaterial(6));
+        const spriteName = String(-Math.floor(checkPos.y)) + ' ' + String(Math.floor(checkPos.x));
+        sprite.position.set(Math.floor(checkPos.x) + 0.5, Math.floor(checkPos.y) - 0.5, 0);
+        var object = this.scene.getObjectByName(spriteName);
+        console.log(spriteName)
+        this.scene.remove(object);
+        sprite.name = spriteName;
+        this.scene.add(sprite);
+        this.scene.setTileAt(checkPos.x, checkPos.y, 6)
+        // this.scene.tiles[-Math.floor(checkPos.y), Math.floor(checkPos.x)] = 1;
+        // tile = 0;
+        // this.repeatCollisions = false;
+        // break;
+      }
+      if (spikeType != 0) {
+        this.position.set(2, -13, 2);
+        return;
+      }
       if (collisionType == 1) {
         const bounds = new Box3(
           this.position.clone().add(this.boundingBox.min),
@@ -175,6 +241,27 @@ class Player extends Group {
       const checkPos = this.position.clone().add(checkOffset);
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
+      const spikeType = TileData.getSpikeType(tile);
+      const chestType = TileData.getChestType(tile);
+      if (chestType != 0) {
+        const sprite = new Sprite(TileData.getMaterial(6));
+        const spriteName = String(-Math.floor(checkPos.y)) + ' ' + String(Math.floor(checkPos.x));
+        sprite.position.set(Math.floor(checkPos.x) + 0.5, Math.floor(checkPos.y) - 0.5, 0);
+        var object = this.scene.getObjectByName(spriteName);
+        console.log(spriteName)
+        this.scene.remove(object);
+        sprite.name = spriteName;
+        this.scene.add(sprite);
+        this.scene.setTileAt(checkPos.x, checkPos.y, 6)
+        // this.scene.tiles[-Math.floor(checkPos.y), Math.floor(checkPos.x)] = 1;
+        // tile = 0;
+        // this.repeatCollisions = false;
+        // break;
+      }
+      if (spikeType != 0) {
+        this.position.set(2, -13, 2);
+        return;
+      }
       if (collisionType == 1) {
         const bounds = new Box3(
           this.position.clone().add(this.boundingBox.min),
@@ -275,7 +362,7 @@ class Player extends Group {
     // update keyboard control
     if (Keyboard.ArrowRight) {
       if (!this.rightWall) {
-        this.velocity.x = Math.min(this.velocity.x + moveAccel, 6.0);
+        this.velocity.x = Math.min(this.velocity.x + moveAccel, 8.0);
       }
       else if (this.velocity.y < 0) {
         this.velocity.y *= 0.88;
@@ -283,7 +370,7 @@ class Player extends Group {
     }
     else if (Keyboard.ArrowLeft) {
       if (!this.leftWall) {
-        this.velocity.x = Math.max(this.velocity.x - moveAccel, -6.0);
+        this.velocity.x = Math.max(this.velocity.x - moveAccel, -8.0);
       }
       else if (this.velocity.y < 0) {
         this.velocity.y *= 0.88;
@@ -320,7 +407,6 @@ class Player extends Group {
     if (Keyboard.z) {
       this.position.x += this.velocity.x / 10;
     }
-
     this.physicsIncrement(5, 1/(5*60));
 
     this.grounded = this.checkGround();
