@@ -13,19 +13,23 @@ class TileData {
     this.materials = new Map();
 
     const tileMapSource = "./src/images/cave_tileset.png";
-    this.createMaterialFromTilemap(0, tileMapSource, 3, 0); // tile type 0, air
-    this.createMaterialFromTilemap(1, tileMapSource, 1, 1); // tile type 1, wall middle
-    this.createMaterialFromTilemap(2, tileMapSource, 0, 1); // tile type 2, wall left
-    this.createMaterialFromTilemap(3, tileMapSource, 2, 1); // tile type 3, wall right
-    this.createMaterialFromTilemap(4, tileMapSource, 0, 3); // tile type 4, vertical spike
-    this.createMaterialFromTilemap(5, tileMapSource, 44, 8); // tile type 4, chest
-    this.createMaterialFromTilemap(6, tileMapSource, 44, 9); // tile type 4, open chest
-    this.createMaterialFromTilemap(7, tileMapSource, 1, 0); // tile type 3, wall top
-    this.createMaterialFromTilemap(8, tileMapSource, 1, 2); // tile type 3, wall bottom
-    this.createMaterialFromTilemap(9, tileMapSource, 0, 0); // tile type 3, wall top left
-    this.createMaterialFromTilemap(10, tileMapSource, 2, 0); // tile type 3, wall top right
-    this.createMaterialFromTilemap(11, tileMapSource, 0, 2); // tile type 3, wall bottom left
-    this.createMaterialFromTilemap(12, tileMapSource, 2, 2); // tile type 3, wall bottom right
+    const oldSource = "./src/images/tile_map.png";
+    this.createMaterialFromTilemap(0, tileMapSource, 8, 8, 3, 0); // tile type 0, air
+    this.createMaterialFromTilemap(1, tileMapSource, 8, 8, 1, 1); // tile type 1, wall middle
+    this.createMaterialFromTilemap(2, tileMapSource, 8, 8, 0, 1); // tile type 2, wall left
+    this.createMaterialFromTilemap(3, tileMapSource, 8, 8, 2, 1); // tile type 3, wall right
+    this.createMaterialFromTilemap(4, tileMapSource, 8, 8, 0, 3); // tile type 4, vertical spike
+    this.createMaterialFromTilemap(5, oldSource, 128, 128, 44, 8); // tile type 5, chest
+    this.createMaterialFromTilemap(6, oldSource, 128, 128, 44, 9); // tile type 6, open chest
+    this.createMaterialFromTilemap(7, tileMapSource, 8, 8, 1, 0); // tile type 7, wall top
+    this.createMaterialFromTilemap(8, tileMapSource, 8, 8, 1, 2); // tile type 8, wall bottom
+    this.createMaterialFromTilemap(9, tileMapSource, 8, 8, 0, 0); // tile type 9, wall top left
+    this.createMaterialFromTilemap(10, tileMapSource, 8, 8, 2, 0); // tile type 10, wall top right
+    this.createMaterialFromTilemap(11, tileMapSource, 8, 8, 0, 2); // tile type 11, wall bottom left
+    this.createMaterialFromTilemap(12, tileMapSource, 8, 8, 2, 2); // tile type 12, wall bottom right
+    this.createMaterialFromTilemap(13, tileMapSource, 8, 8, 1, 3); // tile type 13, right spike
+    this.createMaterialFromTilemap(14, tileMapSource, 8, 8, 2, 3); // tile type 14, down spike
+    this.createMaterialFromTilemap(15, tileMapSource, 8, 8, 3, 3); // tile type 15, left spike
 
     // collision type 0: no collision
     // collision type 1: full collision
@@ -48,6 +52,9 @@ class TileData {
     this.collisionTypes.set(10, 1);
     this.collisionTypes.set(11, 1);
     this.collisionTypes.set(12, 1);
+    this.collisionTypes.set(13, 0);
+    this.collisionTypes.set(14, 0);
+    this.collisionTypes.set(15, 0);
 
 
 
@@ -65,6 +72,9 @@ class TileData {
     this.spikeTypes.set(10, 0);
     this.spikeTypes.set(11, 0);
     this.spikeTypes.set(12, 0);
+    this.spikeTypes.set(13, 1);
+    this.spikeTypes.set(14, 1);
+    this.spikeTypes.set(15, 1);
 
 
     this.chestTypes.set(-1, 0); // -1 specifies the "tile" type beyond map bounds
@@ -81,15 +91,15 @@ class TileData {
     this.chestTypes.set(10, 0);
     this.chestTypes.set(11, 0);
     this.chestTypes.set(12, 0);
+    this.chestTypes.set(13, 0);
+    this.chestTypes.set(14, 0);
+    this.chestTypes.set(15, 0);
 
 
   }
 
   // given a souce tilemap, generate a material of the offsetX, offsetY tile
-  createMaterialFromTilemap(key, source, offsetX, offsetY) {
-
-    const tilesHoriz = 8;
-    const tilesVert = 8;
+  createMaterialFromTilemap(key, source, tilesHoriz, tilesVert, offsetX, offsetY) {
 
     // This sucks... we have to sample a square slightly smaller than the tile,
     // otherwise visible lines show up from rounding issues. Set eps to 0.0
