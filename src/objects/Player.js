@@ -3,7 +3,7 @@ import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } 
 import { TileData, Keyboard } from 'classes';
 import { PlayerSprites } from 'images';
 
-
+// rename test
 
 class Player extends Group {
 
