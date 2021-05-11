@@ -1,9 +1,9 @@
 {
-  "name": "epic-game",
-  "repository": "epic-game",
+  "name": "cave-climber",
+  "repository": "cave-climber",
   "version": "0.0.0",
   "title": "COS 429 Final Project",
-  "description": "currently a whole-lotta nothing",
+  "description": "report demo",
   "keywords": [
     "Princeton",
     "graphics",
