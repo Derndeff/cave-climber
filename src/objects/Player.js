@@ -1,6 +1,6 @@
 import { Group, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
-import { TileData, Keyboard } from 'classes';
+import { TileData, Keyboard, Animator } from 'classes';
 import { PlayerSprites } from 'images';
 
 
@@ -68,30 +68,45 @@ class Player extends Group {
     // if special interaction occurs:
     // this.repeatCollisions = true;
 
-    this.texture = this.createTexture();
+    this.animator = new Animator(8, 8);
+    this.texture = this.animator.createTexture(PlayerSprites);
+    this.animator.setAction(0); // idle
+    this.animator.setFacingLeft(false);
+
+    //this.texture = this.createTexture();
     this.material = new SpriteMaterial({map: this.texture});
     this.sprite = new Sprite(this.material);
     this.sprite.scale.set(3, 3, 1);
-    this.setTextureOffset(0, 1);
+    //this.setTextureOffset(0, 1);
 
+    this.setSpritePosition(false);
     this.add(this.sprite);
     this.scene.addToUpdateList(this);
     this.scene.add(this);
 
-    this.animationFrameRate = 12;
+    this.animationFrameRate = 6;
     this.frameLastUpdated = 0;
-    this.numFrames = 8;
+    this.numFrames = 6;
     this.currentFrame = 0;
 
     this.velocity = new Vector3(0, 0, 0);
   }
 
+  setSpritePosition(facingLeft) {
+    if (!facingLeft) {
+      this.sprite.position.set(0.5, -0.8, 0);
+    }
+    else {
+      this.sprite.position.set(-0.5, -0.8, 0);
+    }
+  }
+
   // create THREE texture that samples a small portion of a tilemap
   createTexture() {
-    const tilesHoriz = 16;
-    const tilesVert = 16;
+    const tilesHoriz = 8;
+    const tilesVert = 8;
 
-    const eps = 0;
+    const eps = 0.03;
 
     const texture = new TextureLoader().load(PlayerSprites);
     texture.magFilter = NearestFilter;
@@ -103,8 +118,8 @@ class Player extends Group {
 
   // update offset used by texture to specify a tile from a tilemap
   setTextureOffset(offsetX, offsetY) {
-    const tilesHoriz = 16;
-    const tilesVert = 16;
+    const tilesHoriz = 8;
+    const tilesVert = 8;
 
     const eps = 0.03;
 
@@ -262,13 +277,6 @@ class Player extends Group {
 
   // Player update code
   update(time) {
-    // temporary animation
-    if (time - this.frameLastUpdated > (1.0/this.animationFrameRate)) {
-      this.currentFrame = (this.currentFrame + 1) % this.numFrames;
-      this.setTextureOffset(this.currentFrame, 1);
-      this.frameLastUpdated += 1.0/this.animationFrameRate;
-    }
-
     // update physics
 
     // gravity
@@ -352,6 +360,23 @@ class Player extends Group {
       this.position.set(2, -13, 2);
       return;
     }
+
+
+    // animate character
+    if (this.velocity.x < 0) {
+      this.setSpritePosition(true);
+      this.animator.setFacingLeft(true);
+    }
+    else {
+      this.setSpritePosition(false);
+      this.animator.setFacingLeft(false);
+    }
+
+    if (Math.abs(this.velocity.x) > 0.1) this.animator.setAction(1);
+    else this.animator.setAction(0);
+
+    this.animator.play(time);
+
   }
 
   // destroy the player by unloading texture, material, sprite, and then removing from its scene
