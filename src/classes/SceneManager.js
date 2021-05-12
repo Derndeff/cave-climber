@@ -40,6 +40,15 @@ class SceneManager {
     this.currentScene = this.scenes[sceneNumber];
     this.currentScene.load();
   }
+  // reloads current scene
+  reloadScene(sceneNumber) {
+    this.currentScene.unload();
+    this.scenes[0] = new Level0();
+    this.scenes[1] = new Level1();
+    // this.scenes[sceneNumber] = new this.scenes[sceneNumber];
+    this.currentScene = this.scenes[sceneNumber];
+    this.currentScene.load();
+  }
 
 }
 

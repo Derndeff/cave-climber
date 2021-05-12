@@ -76,6 +76,8 @@ class Level0 extends Scene {
         // Create level map
         this.createLevelMap();
 
+        this.levelNum = 1;
+
         // Load in player at position 10, 10. Player constructor handles everything
         this.player = new Player(this);
         this.player.position.set(2, -13, 2);

@@ -1,6 +1,6 @@
 import { Group, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
-import { TileData, Keyboard } from 'classes';
+import { TileData, Keyboard, SceneManager } from 'classes';
 import { PlayerSprites } from 'images';
 
 
@@ -350,6 +350,9 @@ class Player extends Group {
     }
     if (spikeType != 0) {
       this.position.set(2, -13, 2);
+      console.log(this.scene.levelNum);
+      SceneManager.reloadScene(0);
+      console.log(this.position)
       return;
     }
   }

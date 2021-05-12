@@ -1,0 +1,1 @@
+export { default as particleEngine } from './SPE.min.js';
