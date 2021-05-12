@@ -15,45 +15,45 @@ class Player extends Group {
 
     // physical bounding box of player
     this.boundingBox = new Box3(
-      new Vector3(-0.5, -1, 0),
-      new Vector3(0.3, 0.2, 0)
+      new Vector3(-0.25, -0.5, 0),
+      new Vector3(0.25, 1, 0)
     );
 
-    this.centerCheck = new Vector3(-0.1, -0.5);
+    this.centerCheck = new Vector3(0, 0);
 
     // where to sample tiles for collision detection, relative to center of player
     this.bottomChecks = [
-      new Vector3(-0.5, -1, 0),
-      new Vector3(0.3, -1, 0)
+      new Vector3(-0.25, -0.5, 0),
+      new Vector3(0.25, -0.5, 0)
     ];
     this.topChecks = [
-      new Vector3(-0.5, 0.2, 0),
-      new Vector3(0.3, 0.2, 0)
+      new Vector3(-0.25, 1, 0),
+      new Vector3(0.25, 1, 0)
     ];
     this.rightChecks = [
-      new Vector3(0.3, 0, 0),
-      new Vector3(0.3, -1, 0),
-      new Vector3(0.3, 0.2, 0)
+      new Vector3(0.25, -0.5, 0),
+      new Vector3(0.25, 0, 0),
+      new Vector3(0.25, 1, 0)
     ];
     this.leftChecks = [
-      new Vector3(-0.5, 0, 0),
-      new Vector3(-0.5, -1, 0),
-      new Vector3(-0.5, 0.2, 0)
+      new Vector3(-0.25, -0.5, 0),
+      new Vector3(-0.25, 0, 0),
+      new Vector3(-0.25, 1, 0)
     ];
 
     this.groundChecks = [
-      new Vector3(-0.45, -1.1, 0),
-      new Vector3(0.25, -1.1, 0)
+      new Vector3(-0.2, -0.55, 0),
+      new Vector3(0.2, -0.55, 0)
     ];
     this.rightWallChecks = [
-      new Vector3(0.4, -0.9, 0),
-      new Vector3(0.4, 0, 0),
-      new Vector3(0.4, 0.1, 0)
+      new Vector3(0.35, -0.4, 0),
+      new Vector3(0.35, 0, 0),
+      new Vector3(0.35, 0.9, 0)
     ];
     this.leftWallChecks = [
-      new Vector3(-0.6, -0.9, 0),
-      new Vector3(-0.6, 0, 0),
-      new Vector3(-0.6, 0.1, 0)
+      new Vector3(-0.35, -0.4, 0),
+      new Vector3(-0.35, 0, 0),
+      new Vector3(-0.35, 0.9, 0)
     ];
 
     // physical states of character
@@ -94,10 +94,10 @@ class Player extends Group {
 
   setSpritePosition(facingLeft) {
     if (!facingLeft) {
-      this.sprite.position.set(0.5, -0.8, 0);
+      this.sprite.position.set(0.4, -0.3, 0);
     }
     else {
-      this.sprite.position.set(-0.5, -0.8, 0);
+      this.sprite.position.set(-0.4, -0.3, 0);
     }
   }
 
@@ -363,6 +363,8 @@ class Player extends Group {
 
 
     // animate character
+
+    // facing left?
     if (this.velocity.x < 0) {
       this.setSpritePosition(true);
       this.animator.setFacingLeft(true);
@@ -372,8 +374,29 @@ class Player extends Group {
       this.animator.setFacingLeft(false);
     }
 
-    if (Math.abs(this.velocity.x) > 0.1) this.animator.setAction(1);
-    else this.animator.setAction(0);
+    if (this.grounded) {
+      if (Math.abs(this.velocity.x) > 0.1) this.animator.setAction(1); // run
+      else this.animator.setAction(0); // idle
+    }
+    else {
+      if (!this.rightWall && !this.leftWall) {
+        if (this.velocity.y > 0) this.animator.setAction(2); // jump
+        else this.animator.setAction(3); // fall
+      }
+      else {
+        if (this.rightWall) {
+          this.setSpritePosition(true);
+          this.animator.setFacingLeft(true);
+          this.animator.setAction(4);
+        }
+        else {
+          this.setSpritePosition(false);
+          this.animator.setFacingLeft(false);
+          this.animator.setAction(4);
+        }
+      }
+    }
+
 
     this.animator.play(time);
 
