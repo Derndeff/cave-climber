@@ -1,6 +1,6 @@
 import { AudioListener, Audio, AudioLoader } from 'three';
 import { SceneManager } from 'classes';
-import { RunAudio, DeathAudio, WallJumpAudio, JumpAudio, SlideAudio, WindAudio, ChestAudio } from 'audio';
+import { RunAudio, DeathAudio, WallJumpAudio, JumpAudio, SlideAudio, WindAudio, ChestAudio, CaveAudio, CaveWindAudio } from 'audio';
 
 class AudioManager {
 
@@ -15,13 +15,19 @@ class AudioManager {
     this.sounds.set(4, new Sound(this.audioListener, WindAudio, true)); // wind sound
     this.sounds.set(5, new Sound(this.audioListener, JumpAudio, false)); // slide sound
     this.sounds.set(6, new Sound(this.audioListener, ChestAudio, false)); // chest unlock
+    this.sounds.set(7, new Sound(this.audioListener, CaveAudio, true)); // cave ambience
+    this.sounds.set(8, new Sound(this.audioListener, CaveWindAudio, true)); // wind ambience
 
     this.sounds.get(0).audio.playbackRate = 1.2;
     this.sounds.get(4).audio.detune = 2400;
+
+    this.sounds.get(7).audio.autoplay = true;
+    this.sounds.get(7).audio.setVolume(0.5);
+    this.sounds.get(8).audio.autoplay = true;
+    this.sounds.get(8).audio.setVolume(0.3);
   }
 
   initialize() {
-
   }
 
   playSound(soundId, duration, volume) {

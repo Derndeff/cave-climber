@@ -267,10 +267,6 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
-        if (this.clock.getElapsedTime() > 0.05) {
-          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
-          this.clock.start();
-        }
         return true;
       }
     }
@@ -284,10 +280,6 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
-        if (this.clock.getElapsedTime() > 0.05) {
-          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
-          this.clock.start();
-        }
         return true;
       }
     }
@@ -390,11 +382,11 @@ class Player extends Group {
       this.scene.add(sprite);
       this.scene.setTileAt(checkPos.x, checkPos.y, 6);
 
-      AudioManager.playSound(6, 3, 0.5);
+      AudioManager.playSound(6, 3, 0.4);
     }
     if (spikeType != 0) {
       AudioManager.playSound(1, 1, 0.75);
-      this.particleManager.createDust(20, this.boundingBox, this.position, new Vector3(0.1, 0, 0), true, 0xff0000);
+      this.particleManager.createDust(20, this.boundingBox, this.position, new Vector3(0.25, 0, 0), true, 0x9f0000);
       this.position.set(2, -13, 2);
       return;
     }
@@ -428,12 +420,20 @@ class Player extends Group {
         if (this.rightWall) {
           this.setSpritePosition(true);
           this.animator.setFacingLeft(true);
-          this.animator.setAction(4);
+          this.animator.setAction(4); // slide
+          if (this.clock.getElapsedTime() > 0.05) {
+            this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
+            this.clock.start();
+          }
         }
         else {
           this.setSpritePosition(false);
           this.animator.setFacingLeft(false);
-          this.animator.setAction(4);
+          this.animator.setAction(4); //slide
+          if (this.clock.getElapsedTime() > 0.05) {
+            this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
+            this.clock.start();
+          }
         }
       }
       if (this.velocity.y < 0) {
