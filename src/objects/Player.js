@@ -252,7 +252,7 @@ class Player extends Group {
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
         if (!this.grounded) {
-          this.particleManager.createDust(4, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
+          this.particleManager.createDust(3, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
         }
         return true;
       }
@@ -332,18 +332,18 @@ class Player extends Group {
         this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
-          this.particleManager.createDust(7, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
+          this.particleManager.createDust(10, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
           // this.particleManager.createSnow(this.scene);
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
           this.velocity.y = 15.0;
-          this.particleManager.createDust(5, this.feetBox, this.position, new Vector3(-0.1, 0, 0), false, 0xffffff);
+          this.particleManager.createDust(10, this.feetBox, this.position, new Vector3(-0.1, 0, 0), false, 0xffffff);
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
           this.velocity.y = 15.0;
-          this.particleManager.createDust(5, this.feetBox, this.position, new Vector3(0.1, 0, 0), false, 0xffffff);
+          this.particleManager.createDust(10, this.feetBox, this.position, new Vector3(0.1, 0, 0), false, 0xffffff);
         }
       }
       this.prevJump = true;
