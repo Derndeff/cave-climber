@@ -26,7 +26,7 @@ class Player extends Group {
     // clock for walldrag particles
     this.clock = new Clock(true);
 
-    this.centerCheck = new Vector3(0, 0);
+    this.centerCheck = new Vector3(0, 0.25);
 
     // where to sample tiles for collision detection, relative to center of player
     this.bottomChecks = [
