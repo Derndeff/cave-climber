@@ -49,7 +49,7 @@ class SceneManager {
       // console.log(curr_system.geometry.vertices)
 
       // debugger;
-      if (curr_system.clock.getElapsedTime() > 2) {
+      if (curr_system.clock.getElapsedTime() > 1) {
         console.log(curr_system.clock.getElapsedTime(), this.currentScene.player.position, curr_system.geometry.vertices);
         this.currentScene.remove(curr_system);
         this.currentScene.player.particleManager.systems.splice(i, 1);
