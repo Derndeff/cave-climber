@@ -2,11 +2,15 @@ import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';
+// import { Snowflake } from 'images';
+
 
 class Level0 extends Scene {
     constructor() {
         // Call parent Scene() constructor
         super();
+
+        this.time = undefined;
 
         this.tileWidth = 36;
         this.tileHeight = 15;
@@ -49,7 +53,7 @@ class Level0 extends Scene {
           [1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
           [1, 1, 1, 1, 3, 0, 0, 0, 9, 7, 7,10, 0, 2,13, 0, 9, 7,10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 2,13, 0,14,14,14, 0, 0, 0, 0, 0, 0, 0, 0, 9,10, 0, 0, 0, 0, 0, 0, 2],
-          [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,14,14, 0, 0, 0, 0, 0, 0, 2],
+          [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,14,14, 0, 0, 0, 0, 0, 0, 2],
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9,10, 0, 0, 0, 0, 0, 0, 0, 0, 9,10, 0, 0, 2],
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,14,14, 0, 0, 0, 0, 0, 0, 0,15, 2, 3, 0, 0, 2],
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0, 0, 9, 7, 7,10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 2, 3, 0, 9, 1],
@@ -66,6 +70,7 @@ class Level0 extends Scene {
         // Load in player at position 10, 10. Player constructor handles everything
         this.player = new Player(this);
         this.player.position.set(2, -13, 2);
+
     }
 
     // return the integer tile type at an unrounded position
@@ -113,10 +118,16 @@ class Level0 extends Scene {
           // grab the material for the given tile using the TileData class (very easy)
           const sprite = new Sprite(TileData.getMaterial(this.tiles[i][j]));
           sprite.name = String(i) + ' ' + String(j);
+          const setFront = TileData.getCollisionType(this.tiles[i][j])
           // tile position is negative in the y-axis... we may want to change
           // this early on, but for now it makes it so that the level matches the
           // array specified by "tiles"
-          sprite.position.set(j + 0.5, -i - 0.5, 0);
+          if (setFront > 0) {
+            sprite.position.set(j + 0.5, -i - 0.5, 0.5);
+          }
+          else {
+            sprite.position.set(j + 0.5, -i - 0.5, 0);
+          }
           this.add(sprite);
         }
       }
@@ -141,6 +152,7 @@ class Level0 extends Scene {
         for (const obj of this.updateList) {
             obj.update(time);
         }
+        this.time = time;
 
         if (this.player.position.x > 35.5) {
           SceneManager.switchScene(1);

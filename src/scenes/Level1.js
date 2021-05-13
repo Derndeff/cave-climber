@@ -1,4 +1,4 @@
-import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
+import { Scene, Color, OrthographicCamera, Vector3, Box3, DirectionalLight } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';
@@ -14,6 +14,10 @@ class Level0 extends Scene {
         // Set up camera. Camera is tied to the scene itself so we can have different
         // levels of different sizes or custom camera code
         this.camera = new OrthographicCamera();
+
+        var light = new DirectionalLight( 0xffffff );
+        light.position.set( 1, -1, 1 ).normalize();
+        this.add(light);
 
         this.camera.position.set(0.5*this.tileWidth, -0.5*this.tileHeight, 10);
         this.camera.lookAt(new Vector3(0.5*this.tileWidth, -0.5*this.tileHeight, 0));
