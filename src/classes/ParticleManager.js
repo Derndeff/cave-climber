@@ -11,41 +11,41 @@ class ParticleManager{
     }
 
     createSnow(scene) {
-        
+
         // The number of particles in a particle system is not easily changed.
         var particleCount = 50;
-        
+
         // Particles are just individual vertices in a geometry
         // Create the geometry that will hold all of the vertices
         var particles = new Geometry();
-    
+
         // Create the vertices and add them to the particles geometry
         for (var p = 0; p < particleCount; p++) {
-        
+
         // This will create all the vertices in a range of -200 to 200 in all directions
         var x = Math.random() * scene.tileWidth;
         var y = Math.random() * scene.tileHeight * -1;
         var z = 0.1;
-                
+
         // Create the vertex
         var particle = new Vector3(x, y, z);
-        
+
         // Add the vertex to the geometry
         particles.vertices.push(particle);
         }
         // Create the material that will be used to render each vertex of the geometry
         var particleMaterial = new PointsMaterial(
-            {color: 0xffffff, 
+            {color: 0xffffff,
             size: 1.5,
             //  map: new TextureLoader().load(Snowflake),
             blending: AdditiveBlending,
             transparent: true,
             });
-        
+
         // Create the particle system
          const particleSystem = new Points(particles, particleMaterial);
-    
-        return particleSystem;	
+
+        return particleSystem;
     }
 
     animateSnow(particleSystem, scene) {
@@ -65,10 +65,10 @@ class ParticleManager{
     }
 
     createDust(count, box, pos, direction, horizontal, color) {
-        
+
         // The number of particles in a particle system is not easily changed.
         var particleCount = count;
-        
+
         // Particles are just individual vertices in a geometry
         // Create the geometry that will hold all of the vertices
         var particles = new Geometry();
@@ -76,29 +76,29 @@ class ParticleManager{
         // var platformLen = start.clone().sub(end);
 
         var boxlen = box.max.clone().sub(box.min);
-    
+
         // Create the vertices and add them to the particles geometry
         for (var p = 0; p < particleCount; p++) {
         var particle = pos.clone().add(box.min);
         particle.z = 0.1;
         particle.x += boxlen.x * Math.random();
         particle.y += boxlen.y * Math.random();
-               
+
         // Create the vertex
-        
+
         // Add the vertex to the geometry
         particles.vertices.push(particle);
         }
         // Create the material that will be used to render each vertex of the geometry
         var particleMaterial = new PointsMaterial(
-            {color: color, 
+            {color: color,
             size: 4,
             //  map: new TextureLoader().load(Snowflake),
             blending: AdditiveBlending,
-            opacity: 1
-            // transparent: true,
+            opacity: 1,
+            transparent: true
             });
-        
+
         // Create the particle system
         const particleSystem = new Points(particles, particleMaterial);
         particleSystem.clock = new Clock(true);
@@ -106,7 +106,7 @@ class ParticleManager{
         particleSystem.horizontal = horizontal;
         particleSystem.name = String(Math.random());
         this.systems.push(particleSystem)
-        return particleSystem;	
+        return particleSystem;
     }
 
     addDust(count, box, pos, particleSystem) {
@@ -134,4 +134,3 @@ class ParticleManager{
 
 // const instance = new ParticleManager();
 export default ParticleManager;
-
