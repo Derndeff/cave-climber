@@ -1,6 +1,6 @@
 import { AudioListener, Audio, AudioLoader } from 'three';
 import { SceneManager } from 'classes';
-import { RunAudio, DeathAudio, WallJumpAudio, JumpAudio, SlideAudio, WindAudio } from 'audio';
+import { RunAudio, DeathAudio, WallJumpAudio, JumpAudio, SlideAudio, WindAudio, ChestAudio } from 'audio';
 
 class AudioManager {
 
@@ -14,12 +14,10 @@ class AudioManager {
     this.sounds.set(3, new Sound(this.audioListener, SlideAudio, true)); // slide sound
     this.sounds.set(4, new Sound(this.audioListener, WindAudio, true)); // wind sound
     this.sounds.set(5, new Sound(this.audioListener, JumpAudio, false)); // slide sound
+    this.sounds.set(6, new Sound(this.audioListener, ChestAudio, false)); // chest unlock
 
     this.sounds.get(0).audio.playbackRate = 1.2;
-    this.sounds.get(2).audio.detune = 0;
-    this.sounds.get(3).audio.detune = 0;
     this.sounds.get(4).audio.detune = 2400;
-    this.sounds.get(5).audio.detune = 0;
   }
 
   initialize() {

@@ -388,7 +388,9 @@ class Player extends Group {
       this.scene.remove(object);
       sprite.name = spriteName;
       this.scene.add(sprite);
-      this.scene.setTileAt(checkPos.x, checkPos.y, 6)
+      this.scene.setTileAt(checkPos.x, checkPos.y, 6);
+
+      AudioManager.playSound(6, 3, 0.5);
     }
     if (spikeType != 0) {
       AudioManager.playSound(1, 1, 0.75);
