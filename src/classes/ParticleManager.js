@@ -64,22 +64,28 @@ class ParticleManager{
         particleSystem.rotation.y -= .001 * this.deltaTime;
     }
 
-    createDust(start, end, direction, horizontal) {
+    createDust(count, box, pos, direction, horizontal) {
         
         // The number of particles in a particle system is not easily changed.
-        var particleCount = 10;
+        var particleCount = count;
         
         // Particles are just individual vertices in a geometry
         // Create the geometry that will hold all of the vertices
         var particles = new Geometry();
 
-        var platformLen = start.clone().sub(end);
+        // var platformLen = start.clone().sub(end);
+
+        var boxlen = box.max.clone().sub(box.min);
     
         // Create the vertices and add them to the particles geometry
         for (var p = 0; p < particleCount; p++) {
-        var particle = start.clone();
+        // var particle = start.clone();
+        // particle.z = 0.1;
+        // particle.add(platformLen.clone().multiplyScalar(p/particleCount));
+        var particle = pos.clone().add(box.min);
         particle.z = 0.1;
-        particle.add(platformLen.clone().multiplyScalar(p/particleCount));
+        particle.x += boxlen.x * Math.random();
+        particle.y += boxlen.y * Math.random();
         // console.log(particle, platformLen, platformLen.clone().multiplyScalar(Math.random()));
                
         // Create the vertex
@@ -107,6 +113,11 @@ class ParticleManager{
         return particleSystem;	
     }
 
+    addDust(count, box, pos, particleSystem) {
+        particleSystem.clock.start();
+
+    }
+
     animateDust(particleSystem, direction) {
         var verts = particleSystem.geometry.vertices;
         particleSystem.material.opacity -= 0.015;
@@ -117,12 +128,13 @@ class ParticleManager{
             if (particleSystem.horizontal) {
                 vert.x -= particleSystem.material.opacity*(i - verts.length/2)/200;
                 // vert.y += (verts.length/2 - Math.abs(i - verts.length/2))/1000
-                vert.y += Math.cos((i - verts.length/2)/(verts.length/3))/100;
+                vert.y += particleSystem.material.opacity*Math.cos((i - verts.length/2)/(verts.length/3))/100;
             }
             else {
                 vert.y -= particleSystem.material.opacity*(i - verts.length/2)/200;
-                vert.x += Math.cos((i - verts.length/2)/(verts.length/3))/100;
+                vert.x += particleSystem.material.opacity*direction.x * Math.cos((i - verts.length/2)/(verts.length/3))/100;
             }
+            
             // vert.add(direction.clone().multiplyScalar(Math.random()*0.1))
         }
         // debugger;

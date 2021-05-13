@@ -312,18 +312,18 @@ class Player extends Group {
         this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
-          this.particleManager.createDust(this.position.clone().add(this.groundChecks[0]), this.position.clone().add(this.groundChecks[0]), new Vector3(0, 0.1, 0), true);
+          this.particleManager.createDust(10, this.boundingBox, this.position, new Vector3(0, 0.1, 0), true);
           // this.particleManager.createSnow(this.scene);
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
           this.velocity.y = 15.0;
-          this.particleManager.createDust(this.position.clone().add(this.rightChecks[1]), this.position.clone().add(this.rightChecks[1]), new Vector3(-0.1, 0, 0), false);
+          this.particleManager.createDust(10, this.boundingBox, this.position, new Vector3(-0.1, 0, 0), false);
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
           this.velocity.y = 15.0;
-          this.particleManager.createDust(this.position.clone().add(this.leftChecks[1]), this.position.clone().add(this.leftChecks[1]), new Vector3(0.1, 0, 0), false);
+          this.particleManager.createDust(10, this.boundingBox, this.position, new Vector3(0.1, 0, 0), false);
         }
       }
       this.prevJump = true;
