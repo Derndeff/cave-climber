@@ -365,11 +365,11 @@ class Player extends Group {
     // animate character
 
     // facing left?
-    if (this.velocity.x < 0) {
+    if (this.velocity.x < -0.1) {
       this.setSpritePosition(true);
       this.animator.setFacingLeft(true);
     }
-    else {
+    else if (this.velocity.x > 0.1) {
       this.setSpritePosition(false);
       this.animator.setFacingLeft(false);
     }
