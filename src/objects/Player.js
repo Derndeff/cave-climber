@@ -1,9 +1,7 @@
 import { Group, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
-import { TileData, Keyboard, Animator } from 'classes';
+import { TileData, Keyboard, Animator, ParticleManager } from 'classes';
 import { PlayerSprites } from 'images';
-
-
 
 class Player extends Group {
 
@@ -15,7 +13,7 @@ class Player extends Group {
 
     // physical bounding box of player
     this.boundingBox = new Box3(
-      new Vector3(-0.25, -0.5, 0),
+      new Vector3(-0.25, -0.5, 0), 
       new Vector3(0.25, 1, 0)
     );
 
@@ -90,6 +88,8 @@ class Player extends Group {
     this.currentFrame = 0;
 
     this.velocity = new Vector3(0, 0, 0);
+
+    this.particleManager = new ParticleManager();
   }
 
   setSpritePosition(facingLeft) {
@@ -312,14 +312,18 @@ class Player extends Group {
         this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
+          this.particleManager.createDust(this.position.clone().add(this.groundChecks[0]), this.position.clone().add(this.groundChecks[1]), new Vector3(0, 0.1, 0));
+          // this.particleManager.createSnow(this.scene);
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
           this.velocity.y = 15.0;
+          this.particleManager.createDust(this.position.clone().add(this.rightChecks[0]), this.position.clone().add(this.rightChecks[2]), new Vector3(-0.1, 0, 0));
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
           this.velocity.y = 15.0;
+          this.particleManager.createDust(this.position.clone().add(this.leftChecks[0]), this.position.clone().add(this.leftChecks[2]), new Vector3(0.1, 0, 0));
         }
       }
       this.prevJump = true;
