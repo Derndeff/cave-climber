@@ -1,4 +1,4 @@
-import { Scene, Color, OrthographicCamera, Vector3, Box3, Points, PointsMaterial, Geometry, Clock, AdditiveBlending } from 'three';
+import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';

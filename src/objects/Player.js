@@ -1,4 +1,4 @@
-import { Group, Vector3, Box3 } from 'three';
+import { Group, Vector3, Box3, Clock } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, Keyboard, Animator, ParticleManager } from 'classes';
 import { PlayerSprites } from 'images';
@@ -16,6 +16,15 @@ class Player extends Group {
       new Vector3(-0.25, -0.5, 0), 
       new Vector3(0.25, 1, 0)
     );
+
+    // feetbox for particles
+    this.feetBox = new Box3(
+      new Vector3(-0.25, -0.5, 0), 
+      new Vector3(0.25, 0, 0)
+    );
+
+    // clock for walldrag particles
+    this.clock = new Clock(true);
 
     this.centerCheck = new Vector3(0, 0);
 
@@ -242,6 +251,9 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
+        if (!this.grounded) {
+          this.particleManager.createDust(4, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
+        }
         return true;
       }
     }
@@ -255,6 +267,10 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
+        if (this.clock.getElapsedTime() > 0.05) {
+          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
+          this.clock.start();
+        }
         return true;
       }
     }
@@ -268,6 +284,10 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
+        if (this.clock.getElapsedTime() > 0.05) {
+          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
+          this.clock.start();
+        }
         return true;
       }
     }
@@ -312,18 +332,18 @@ class Player extends Group {
         this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
-          this.particleManager.createDust(10, this.boundingBox, this.position, new Vector3(0, 0.1, 0), true);
+          this.particleManager.createDust(7, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
           // this.particleManager.createSnow(this.scene);
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
           this.velocity.y = 15.0;
-          this.particleManager.createDust(10, this.boundingBox, this.position, new Vector3(-0.1, 0, 0), false);
+          this.particleManager.createDust(5, this.feetBox, this.position, new Vector3(-0.1, 0, 0), false, 0xffffff);
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
           this.velocity.y = 15.0;
-          this.particleManager.createDust(10, this.boundingBox, this.position, new Vector3(0.1, 0, 0), false);
+          this.particleManager.createDust(5, this.feetBox, this.position, new Vector3(0.1, 0, 0), false, 0xffffff);
         }
       }
       this.prevJump = true;
@@ -355,12 +375,19 @@ class Player extends Group {
       sprite.position.set(Math.floor(checkPos.x) + 0.5, Math.floor(checkPos.y) + 0.5, 0);
       var object = this.scene.getObjectByName(spriteName);
 
+       var chestBox = new Box3(
+        new Vector3(Math.floor(checkPos.x), Math.floor(checkPos.y), 0), 
+        new Vector3(Math.ceil(checkPos.x), Math.ceil(checkPos.y), 0)
+      );
+      this.particleManager.createDust(20, chestBox, new Vector3(0, 0, 0), new Vector3(0.0, 0, 0), true, 0xffff00);
+
       this.scene.remove(object);
       sprite.name = spriteName;
       this.scene.add(sprite);
       this.scene.setTileAt(checkPos.x, checkPos.y, 6)
     }
     if (spikeType != 0) {
+      this.particleManager.createDust(20, this.boundingBox, this.position, new Vector3(0.1, 0, 0), true, 0xff0000);
       this.position.set(2, -13, 2);
       return;
     }
