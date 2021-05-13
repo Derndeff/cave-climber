@@ -314,17 +314,17 @@ class Player extends Group {
         this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
-          AudioManager.playSound(2, 1, 0.3);
+          AudioManager.playSound(5, 1, 0.8);
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
           this.velocity.y = 15.0;
-          AudioManager.playSound(2, 1, 0.3);
+          AudioManager.playSound(2, 1, 0.6);
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
           this.velocity.y = 15.0;
-          AudioManager.playSound(2, 1, 0.3);
+          AudioManager.playSound(2, 1, 0.6);
         }
       }
       this.prevJump = true;
