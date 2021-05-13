@@ -16,7 +16,7 @@ class SceneManager {
   }
 
   // intialized the class's variables
-  initializeSceneSelector() {
+  initialize() {
 
     this.renderer = new WebGLRenderer({ antialias: true });
 

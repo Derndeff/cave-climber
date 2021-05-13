@@ -1,6 +1,6 @@
 import { Group, Vector3, Box3 } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
-import { TileData, Keyboard, Animator } from 'classes';
+import { TileData, Keyboard, Animator, AudioManager } from 'classes';
 import { PlayerSprites } from 'images';
 
 
@@ -291,16 +291,18 @@ class Player extends Group {
       if (!this.rightWall) {
         this.velocity.x = Math.min(this.velocity.x + moveAccel, 8.0);
       }
-      else if (this.velocity.y < 0) {
+      else if (this.velocity.y < -1) {
         this.velocity.y *= 0.88;
+        AudioManager.playSound(3, 0.1, -this.velocity.y*0.02);
       }
     }
     else if (Keyboard.ArrowLeft) {
       if (!this.leftWall) {
         this.velocity.x = Math.max(this.velocity.x - moveAccel, -8.0);
       }
-      else if (this.velocity.y < 0) {
+      else if (this.velocity.y < -1) {
         this.velocity.y *= 0.88;
+        AudioManager.playSound(3, 0.1, -this.velocity.y*0.02);
       }
     }
     else if (this.grounded) {
@@ -312,14 +314,17 @@ class Player extends Group {
         this.jumpStartTime = time;
         if (this.grounded) {
           this.velocity.y = 20.0;
+          AudioManager.playSound(2, 1, 0.3);
         }
         else if (this.rightWall) {
           this.velocity.x = -10.0;
           this.velocity.y = 15.0;
+          AudioManager.playSound(2, 1, 0.3);
         }
         else if (this.leftWall) {
           this.velocity.x = 10.0;
           this.velocity.y = 15.0;
+          AudioManager.playSound(2, 1, 0.3);
         }
       }
       this.prevJump = true;
@@ -357,6 +362,7 @@ class Player extends Group {
       this.scene.setTileAt(checkPos.x, checkPos.y, 6)
     }
     if (spikeType != 0) {
+      AudioManager.playSound(1, 1, 0.75);
       this.position.set(2, -13, 2);
       return;
     }
@@ -375,7 +381,10 @@ class Player extends Group {
     }
 
     if (this.grounded) {
-      if (Math.abs(this.velocity.x) > 0.1) this.animator.setAction(1); // run
+      if (Math.abs(this.velocity.x) > 0.1) {
+        this.animator.setAction(1); // run
+        AudioManager.playSound(0, 0.1, Math.abs(this.velocity.x)*0.03); // play run sound
+      }
       else this.animator.setAction(0); // idle
     }
     else {
@@ -395,6 +404,10 @@ class Player extends Group {
           this.animator.setAction(4);
         }
       }
+      if (this.velocity.y < 0) {
+        AudioManager.playSound(4, 0.1, Math.abs(this.velocity.y)*0.005);
+      }
+
     }
 
 

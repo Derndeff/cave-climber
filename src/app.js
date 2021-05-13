@@ -5,13 +5,13 @@
  * which handles scene loading and running the current scene.
  *
  */
-import { SceneManager, Keyboard } from 'classes';
+import { SceneManager, AudioManager, Keyboard } from 'classes';
 
 
 
 // Initialize scene manager
-SceneManager.initializeSceneSelector();
-
+SceneManager.initialize();
+AudioManager.initialize();
 
 
 // Not sure what these options are lol, they came in the starter code -Raiden
@@ -28,7 +28,10 @@ document.body.appendChild(canvas);
 // Main loop. Run the current scene specified by the SceneManager
 const gameLoop = (time) => {
   time /= 1000;
+
   SceneManager.runScene(time);
+  AudioManager.update(time);
+
   window.requestAnimationFrame(gameLoop);
 };
 window.requestAnimationFrame(gameLoop);
