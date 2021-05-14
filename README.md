@@ -1,3 +1,5 @@
+Better readme in progres.......
+
 # COS 426 Final Project Seed
 
 This skeleton project will help you get started on your ThreeJS project and provide a strong foundation for extension. It sets up a simple scene, camera, and renderer in a modern JavaScript environment, and is written using some common best-practices that you may want to draw from.
