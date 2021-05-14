@@ -359,9 +359,7 @@ class Player extends Group {
         this.velocity.y -= (0.3 - jumpDuration)*10;
       }
     }
-    if (Keyboard.z) {
-      this.position.x += this.velocity.x / 10;
-    }
+
     this.physicsIncrement(5, 1/(5*60));
 
     const jumpDuration = time - this.jumpStartTime;
