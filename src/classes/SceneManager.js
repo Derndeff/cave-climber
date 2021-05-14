@@ -1,11 +1,12 @@
 import { WebGLRenderer,  Points, PointsMaterial, Geometry, Clock, AdditiveBlending, Vector3, TextureLoader } from 'three';
-import { Title, Level0, Level1 } from 'scenes';
+import { Title, Level0, Level1, Level2, Level3 } from 'scenes';
 import { Snowflake } from 'images';
 import { ParticleManager } from 'classes';
 
 
 // This singleton class manages loading and unloading different levels. This
 // should allow us to very cleanly add new levels, load and unload them without trouble
+
 class SceneManager {
 
   // declare variables, but DONT store them yet. This constructor is called very early,
@@ -17,6 +18,8 @@ class SceneManager {
     this.renderer = undefined;
     this.particleSystem = undefined;
     this.particleManager = undefined;
+    this.deaths = 0;
+    this.chests = 0;
   }
 
   // intialized the class's variables
@@ -27,6 +30,8 @@ class SceneManager {
     this.scenes[0] = new Title();
     this.scenes[1] = new Level0();
     this.scenes[2] = new Level1();
+    this.scenes[3] = new Level2();
+    this.scenes[4] = new Level3();
 
     this.currentScene = this.scenes[0];
     this.currentScene.load();
