@@ -5,3 +5,5 @@ export { default as JumpAudio } from './wall_jump_2.wav';;
 export { default as SlideAudio } from './slide.wav';
 export { default as WindAudio } from './wind_2.wav';
 export { default as ChestAudio } from './money.wav';
+export { default as CaveAudio } from './cave.wav';
+export { default as CaveWindAudio } from './cave_wind.wav';
