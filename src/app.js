@@ -6,7 +6,7 @@
  *
  */
 import { SceneManager, AudioManager, Keyboard } from 'classes';
-import { timeHTML, timeToString } from './classes/htmlManager.js'
+import { timeHTML, timeToString, handleResizeHTML } from './classes/htmlManager.js'
 
 
 
@@ -15,6 +15,7 @@ SceneManager.initialize();
 AudioManager.initialize();
 
 timeHTML();
+window.addEventListener('resize', handleResizeHTML(), false);
 
 // Not sure what these options are lol, they came in the starter code -Raiden
 // Set up renderer, canvas, and minor CSS adjustments
@@ -29,7 +30,7 @@ document.body.appendChild(canvas);
 document.getElementById('death').innerHTML = String(0)
 document.getElementById('chest').innerHTML = String(0)
 
-
+console.log(window.innerWidth, window.innerHeight)
 
 // Main loop. Run the current scene specified by the SceneManager
 const gameLoop = (time) => {

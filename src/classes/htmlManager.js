@@ -2,10 +2,10 @@ import { Vector3 } from 'three';
 
 
 var timedistHTML = "\
-<span id=timedist style='position: absolute; top: "+80+"px; left: "+55+"px; display: block;'>\
-	<h1 style='color: silver; font-size: 30px;'>Time:&nbsp<span id=time></span></h1>\
-    <h1 style='color: silver; font-size: 30px; position: relative; top: "+(-53)+"px; left: "+300+"px;'>Deaths:&nbsp<span id=death></span></h1>\
-    <h1 style='color: silver; font-size: 30px; position: relative; top: "+(-106)+"px; left: "+600+"px;'>Chests:&nbsp<span id=chest></span></h1>\
+<span id=timedist style='position: absolute; top: "+Math.floor(window.innerWidth/2)+"px; left: "+55+"px; display: inline;'>\
+	<h1 style='color: silver; font-size: 20px;'>Time:&nbsp<span id=time></span></h1>\
+    <h1 style='color: silver; font-size: 20px; position: relative; top: "+(-36.5)+"px; left: "+Math.floor(window.innerWidth/3)+"px;'>Deaths:&nbsp<span id=death></span></h1>\
+    <h1 style='color: silver; font-size: 20px; position: relative; top: "+(-72)+"px; left: "+Math.floor(window.innerWidth/1.7)+"px;'>Chests:&nbsp<span id=chest></span></h1>\
     </span>\
 ";
 
@@ -39,14 +39,11 @@ function backPad(num, l) {
 	return newNum;
 }
 
-// function timeToString(time, startTime) {
-// 	let totTime = (time - startTime);
-// 	let seconds = Math.floor(totTime) % 60;
-// 	let minutes = (Math.floor(totTime) - seconds) / 60;
-// 	//console.log('millis:', totTime / 1000 - Math.floor(totTime / 1000));
-// 	// let milliseconds = '' + Math.floor((totTime - Math.floor(totTime)));
-// 	return minutes + ':' + frontPad(seconds, 2) //+ '.' + backPad(milliseconds.substring(0, 4), 3);
-// }
+function handleResizeHTML() {
+	let td = document.getElementById('timedist');
+	td.style.left = (window.innerWidth - window.innerWidth/1.2) + 'px';
+	td.style.top = '0px';
+}
 
 
 function timeToString(time, startTime) {
@@ -59,4 +56,4 @@ function timeToString(time, startTime) {
 }
 
 
-export {timeHTML, timeToString};
+export {timeHTML, timeToString, handleResizeHTML};
