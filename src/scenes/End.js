@@ -136,7 +136,7 @@ class End extends Scene {
       this.createTextBox(SimpleFont, "You Escaped!", 0.8, new Vector3(2, -4.5, 0));
       this.createTextBox(SimpleFont, "Completion Time: " + document.getElementById('time').innerHTML, 0.2, new Vector3(2, -5.2, 0));
       this.createTextBox(SimpleFont, "Number of Deaths: " + document.getElementById('death').innerHTML, 0.2, new Vector3(2, -5.5, 0));
-      this.createTextBox(SimpleFont, "Number of Chests Collected: " + document.getElementById('chest').innerHTML + " / 10", 0.2, new Vector3(2, -5.8, 0));
+      this.createTextBox(SimpleFont, "Number of Chests Collected: " + document.getElementById('chest').innerHTML + " / 7", 0.2, new Vector3(2, -5.8, 0));
       this.createTextBox(SimpleFont, "REFRESH PAGE TO PLAY AGAIN", 0.2, new Vector3(3, -6.5, 0));
     }
 
