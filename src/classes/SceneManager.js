@@ -1,5 +1,5 @@
 import { WebGLRenderer,  Points, PointsMaterial, Geometry, Clock, AdditiveBlending, Vector3, TextureLoader } from 'three';
-import { Title, Level0, Level1, Level2, Level3 } from 'scenes';
+import { Title, Level0, Level1, Level2, Level3, End } from 'scenes';
 import { Snowflake } from 'images';
 import { ParticleManager } from 'classes';
 
@@ -32,6 +32,7 @@ class SceneManager {
     this.scenes[2] = new Level1();
     this.scenes[3] = new Level2();
     this.scenes[4] = new Level3();
+    this.scenes[5] = new End();
 
     this.currentScene = this.scenes[0];
     this.currentScene.load();

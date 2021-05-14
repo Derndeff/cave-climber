@@ -6,7 +6,7 @@ import { SimpleFont } from 'fonts';
 // import { Snowflake } from 'images';
 
 
-class Title extends Scene {
+class End extends Scene {
     constructor() {
         // Call parent Scene() constructor
         super();
@@ -43,14 +43,6 @@ class Title extends Scene {
 
         const light = new AmbientLight(0xffffff);
         this.add(light);
-
-        this.createTextBox(SimpleFont, "Cave Climber", 0.8, new Vector3(2, -4.5, 0));
-        this.createTextBox(SimpleFont, "CONTROLS", 0.1, new Vector3(2, -5, 0));
-        this.createTextBox(SimpleFont, "Move - ArrowRight and ArrowLeft", 0.1, new Vector3(2, -5.2, 0));
-        this.createTextBox(SimpleFont, "Jump - ArrowUp or Space, hold for extra jump height", 0.1, new Vector3(2, -5.4, 0));
-        this.createTextBox(SimpleFont, "Wall Slide - ArrowRight and ArrowLeft into wall", 0.1, new Vector3(2, -5.6, 0));
-        this.createTextBox(SimpleFont, "Wall Jump - ArrowUp or Space while on wall", 0.1, new Vector3(2, -5.8, 0));
-        this.createTextBox(SimpleFont, "PRESS SPACE TO BEGIN", 0.2, new Vector3(3.7, -6.5, 0));
     }
 
     createTextBox(fontUrl, text, size, position) {
@@ -70,7 +62,7 @@ class Title extends Scene {
           const mesh = new Mesh(geometry, new MeshPhongMaterial({color: 0xffffff}));
           mesh.position.set(position.x, position.y, position.z);
           mesh.scale.set(1, 1, 1);
-          SceneManager.scenes[0].add(mesh);
+          SceneManager.currentScene.add(mesh);
 
         }
       );
@@ -133,10 +125,6 @@ class Title extends Scene {
         for (const obj of this.updateList) {
             obj.update(time);
         }
-
-        if (Keyboard.Space) {
-          SceneManager.switchScene(1);
-        }
     }
 
     // Called when the scene is loaded in. We want to link event listeners, but
@@ -144,6 +132,12 @@ class Title extends Scene {
     load() {
       this.windowResizeHandler();
       window.addEventListener('resize', this.windowResizeHandler, false);
+
+      this.createTextBox(SimpleFont, "You Escaped!", 0.8, new Vector3(2, -4.5, 0));
+      this.createTextBox(SimpleFont, "Completion Time: " + document.getElementById('time').innerHTML, 0.2, new Vector3(2, -5.2, 0));
+      this.createTextBox(SimpleFont, "Number of Deaths: " + document.getElementById('death').innerHTML, 0.2, new Vector3(2, -5.5, 0));
+      this.createTextBox(SimpleFont, "Number of Chests Collected: " + document.getElementById('chest').innerHTML + " / 10", 0.2, new Vector3(2, -5.8, 0));
+      this.createTextBox(SimpleFont, "REFRESH PAGE TO PLAY AGAIN", 0.2, new Vector3(3, -6.5, 0));
     }
 
     // Called when a different scene is switched to. Unlinks event listeners,
@@ -156,4 +150,4 @@ class Title extends Scene {
 
 }
 
-export default Title;
+export default End;
