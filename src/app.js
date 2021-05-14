@@ -30,8 +30,6 @@ document.body.appendChild(canvas);
 document.getElementById('death').innerHTML = String(0)
 document.getElementById('chest').innerHTML = String(0)
 
-console.log(window.innerWidth, window.innerHeight)
-
 let startTime = undefined;
 
 // Main loop. Run the current scene specified by the SceneManager
