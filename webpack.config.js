@@ -51,6 +51,7 @@ module.exports = {
             classes$: path.resolve(__dirname, 'src/classes'),
             images$: path.resolve(__dirname, 'src/images'),
             audio$: path.resolve(__dirname, 'src/audio'),
+            fonts$: path.resolve(__dirname, 'src/fonts'),
         },
     },
     plugins: [

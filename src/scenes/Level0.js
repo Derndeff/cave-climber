@@ -1,7 +1,8 @@
-import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
+import { Scene, Color, OrthographicCamera, Vector3, Box3, AmbientLight, FontLoader, TextGeometry, Mesh, MeshPhongMaterial } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';
+import { SimpleFont } from 'fonts';
 // import { Snowflake } from 'images';
 
 
@@ -24,6 +25,8 @@ class Level0 extends Scene {
         this.camera.near = 1;
         this.camera.far = 100;
 
+        this.topLeft = new Vector3();
+
         // Resize Handler... we must update the camera when the window is resized
         this.windowResizeHandler = () => {
             const { innerHeight, innerWidth } = window;
@@ -34,6 +37,8 @@ class Level0 extends Scene {
             this.camera.top = 0.5*this.tileWidth/ratio;
             this.camera.bottom = -0.5*this.tileWidth/ratio;
             this.camera.updateProjectionMatrix();
+            this.topLeft = this.camera.position.clone().add(new Vector3(this.camera.left, this.camera.top, 0));
+            this.repositionDeathCount(this.topLeft);
         };
 
         // List of object to update each scene update
@@ -71,6 +76,42 @@ class Level0 extends Scene {
         this.player = new Player(this);
         this.player.position.set(2, -13, 2);
 
+        const light = new AmbientLight(0xffffff);
+        this.add(light);
+
+        this.deathCountMesh = undefined;
+        this.deathCountText = undefined;
+
+    }
+
+    createDeathCount(fontUrl, text, size, position) {
+      const loader = new FontLoader();
+      loader.load(
+        fontUrl,
+        function(font) {
+        	const geometry = new TextGeometry(
+            text,
+            {
+        		font: font,
+        		size: size,
+        		height: 1
+        	  }
+          );
+
+          const mesh = new Mesh(geometry, new MeshPhongMaterial({color: 0xffffff}));
+          mesh.position.set(position.x, position.y, position.z);
+          mesh.scale.set(1, 1, 1);
+          SceneManager.currentScene.add(mesh);
+          SceneManager.currentScene.deathCountMesh = mesh;
+          SceneManager.currentScene.deathCountText = geometry;
+        }
+      );
+    }
+
+    repositionDeathCount(position) {
+      if (this.deathCountMesh !== undefined) {
+        this.deathCountMesh.position.set(position.x, position.y, position.z);
+      }
     }
 
     // return the integer tile type at an unrounded position
@@ -156,7 +197,13 @@ class Level0 extends Scene {
 
         if (this.player.position.x > 35.5) {
           this.player.position.x = 35;
-          SceneManager.switchScene(1);
+          SceneManager.switchScene(2);
+        }
+
+        if (this.deathCountText !== undefined) {
+          this.deathCountText.dispose();
+          this.remove(this.deathCountMesh);
+          this.createDeathCount(SimpleFont, "Deaths: " + time, 0.5, new Vector3(0, 0, 0));
         }
     }
 
@@ -165,6 +212,7 @@ class Level0 extends Scene {
     load() {
       this.windowResizeHandler();
       window.addEventListener('resize', this.windowResizeHandler, false);
+      this.createDeathCount(SimpleFont, "Deaths: ", 0.5, new Vector3(0, 0, 0));
     }
 
     // Called when a different scene is switched to. Unlinks event listeners,

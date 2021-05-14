@@ -24,13 +24,17 @@ document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 
-
+let startTime = 0;
 // Main loop. Run the current scene specified by the SceneManager
 const gameLoop = (time) => {
   time /= 1000;
 
   SceneManager.runScene(time);
   AudioManager.update(time);
+
+  if (startTime == undefined)
+		startTime = time;
+	document.getElementById('time').innerHTML = time;
 
   window.requestAnimationFrame(gameLoop);
 };
@@ -76,3 +80,28 @@ const onKeyUp = (event) => {
   }
 }
 window.addEventListener('keyup', onKeyUp);
+
+
+var timedistHTML = "\
+<span id=timedist style='position: absolute; top: "+80+"px; left: "+55+"px; display: block;'>\
+	<h1 style='color: silver; font-size: 30px;'>Time:&nbsp<span id=time></span></h1>\
+	<h1 style='color: silver; font-size: 30px; position: relative; top: "+(-25)+"px;'>Distance:&nbsp<span id=dist></span></h1>\
+</span>\
+";
+
+//timedistHTML();
+
+/*
+let elem = document.createElement("SPAN");
+elem.innerHTML = timedistHTML;
+document.body.appendChild(elem);
+*/
+
+const timeAndDistHTML = () => {
+  console.log(document);
+	let elem = document.createElement("SPAN");
+	elem.innerHTML = timedistHTML;
+	document.body.appendChild(elem);
+}
+
+timeAndDistHTML();
