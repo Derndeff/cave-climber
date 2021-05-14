@@ -16,7 +16,7 @@ class SceneManager {
     this.currentScene = undefined;
     this.renderer = undefined;
     this.particleSystem = undefined;
-    this.particleManage = undefined;
+    this.particleManager = undefined;
   }
 
   // intialized the class's variables
@@ -30,28 +30,31 @@ class SceneManager {
     this.currentScene = this.scenes[0];
     this.currentScene.load();
 
-    this.snowManager = new ParticleManager();
-    this.snowSystem = this.snowManager.createSnow(this.currentScene);
+    this.particleManager = new ParticleManager();
+    this.snowSystem = this.particleManager.createSnow(this.currentScene);
     this.currentScene.add(this.snowSystem);
+    if (this.currentScene.player != undefined) {
+      this.currentScene.player.particleManager = this.particleManager;
+    }
 
   }
 
   // renders and updates the current scene
   runScene(time) {
     this.renderer.render(this.currentScene, this.currentScene.camera);
-    this.snowManager.animateSnow(this.snowSystem, this.currentScene);
+    this.particleManager.animateSnow(this.snowSystem, this.currentScene);
 
-    for (let i = this.currentScene.player.particleManager.systems.length - 1; i >= 0; i--) {
-      let curr_system = this.currentScene.player.particleManager.systems[i];
+    for (let i = this.particleManager.systems.length - 1; i >= 0; i--) {
+      let curr_system = this.particleManager.systems[i];
       if (!this.currentScene.getObjectByName(curr_system.name)) {
         this.currentScene.add(curr_system);
       }
       if (curr_system.clock.getElapsedTime() > 1) {
         this.currentScene.remove(curr_system);
-        this.currentScene.player.particleManager.systems.splice(i, 1);
+        this.particleManager.systems.splice(i, 1);
       }
       else{
-        this.currentScene.player.particleManager.animateDust(curr_system, curr_system.direction);
+        this.particleManager.animateDust(curr_system, curr_system.direction);
       }
     }
     this.currentScene.update(time);
@@ -59,11 +62,15 @@ class SceneManager {
 
   // switches from a previous scene to a new one
   switchScene(sceneNumber) {
+    this.currentScene.remove(this.snowSystem);
     this.currentScene.unload();
     this.currentScene = this.scenes[sceneNumber];
     this.currentScene.load();
-    this.snowSystem = this.snowManager.createSnow(this.currentScene);
+    this.snowSystem = this.particleManager.createSnow(this.currentScene);
     this.currentScene.add(this.snowSystem);
+    if (this.currentScene.player != undefined) {
+      this.currentScene.player.particleManager = this.particleManager;
+    }
   }
 }
 

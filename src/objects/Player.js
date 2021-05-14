@@ -1,6 +1,6 @@
 import { Group, Vector3, Box3, Clock } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
-import { TileData, Keyboard, Animator, AudioManager, ParticleManager } from 'classes';
+import { TileData, Keyboard, Animator, AudioManager, ParticleManager, SceneManager } from 'classes';
 import { PlayerSprites } from 'images';
 
 class Player extends Group {
@@ -98,7 +98,7 @@ class Player extends Group {
 
     this.velocity = new Vector3(0, 0, 0);
 
-    this.particleManager = new ParticleManager();
+    this.particleManager = SceneManager.particleManager;
   }
 
   setSpritePosition(facingLeft) {
@@ -267,10 +267,6 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
-        if (this.clock.getElapsedTime() > 0.05) {
-          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
-          this.clock.start();
-        }
         return true;
       }
     }
@@ -284,10 +280,6 @@ class Player extends Group {
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
-        if (this.clock.getElapsedTime() > 0.05) {
-          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
-          this.clock.start();
-        }
         return true;
       }
     }
@@ -314,6 +306,10 @@ class Player extends Group {
       else if (this.velocity.y < -1) {
         this.velocity.y *= 0.88;
         AudioManager.playSound(3, 0.1, -this.velocity.y*0.02);
+        if (this.clock.getElapsedTime() > 0.05) {
+          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
+          this.clock.start();
+        }
       }
     }
     else if (Keyboard.ArrowLeft) {
@@ -323,6 +319,10 @@ class Player extends Group {
       else if (this.velocity.y < -1) {
         this.velocity.y *= 0.88;
         AudioManager.playSound(3, 0.1, -this.velocity.y*0.02);
+        if (this.clock.getElapsedTime() > 0.05) {
+          this.particleManager.createDust(1, this.boundingBox, this.position, new Vector3(0, -0.1, 0), true, 0xffffff);
+          this.clock.start();
+        }
       }
     }
     else if (this.grounded) {
