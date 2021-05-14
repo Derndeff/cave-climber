@@ -27,20 +27,21 @@ document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 
-document.getElementById('death').innerHTML = String(0)
-document.getElementById('chest').innerHTML = String(0)
+document.getElementById('death').innerHTML = String(0);
+document.getElementById('chest').innerHTML = String(0);
 
 let startTime = undefined;
 
 // Main loop. Run the current scene specified by the SceneManager
 const gameLoop = (time) => {
+  time /= 1000;
+
   if (startTime === undefined && SceneManager.currentScene !== SceneManager.scenes[0])
     startTime = time;
   else if (startTime !== undefined) {
     document.getElementById('time').innerHTML = timeToString(time, startTime);
   }
 
-  time /= 1000;
 
   SceneManager.runScene(time);
   AudioManager.update(time);
@@ -92,27 +93,27 @@ const onKeyUp = (event) => {
 window.addEventListener('keyup', onKeyUp);
 
 /*
-var timedistHTML = "\
+var topUI = "\
 <span id=timedist style='position: absolute; top: "+80+"px; left: "+55+"px; display: block;'>\
 	<h1 style='color: silver; font-size: 30px;'>Time:&nbsp<span id=time></span></h1>\
 	<h1 style='color: silver; font-size: 30px; position: relative; top: "+(-25)+"px;'>Distance:&nbsp<span id=dist></span></h1>\
 </span>\
 ";
 
-//timedistHTML();
+//topUI();
 
 */
 
 /*
 let elem = document.createElement("SPAN");
-elem.innerHTML = timedistHTML;
+elem.innerHTML = topUI;
 document.body.appendChild(elem);
 */
 /*
 const timeAndDistHTML = () => {
   console.log(document);
 	let elem = document.createElement("SPAN");
-	elem.innerHTML = timedistHTML;
+	elem.innerHTML = topUI;
 	document.body.appendChild(elem);
 }
 
