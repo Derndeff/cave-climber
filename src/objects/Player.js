@@ -1,4 +1,4 @@
-import { Group, Vector3, Box3, Clock } from 'three';
+import { Group, Vector3, Box3, Clock, Scene } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, Keyboard, Animator, AudioManager, ParticleManager, SceneManager } from 'classes';
 import { PlayerSprites } from 'images';
@@ -8,7 +8,7 @@ class Player extends Group {
   constructor(parent) {
 
     super();
-
+    this.start = new Vector3();
     this.scene = parent;
 
     // physical bounding box of player
@@ -245,14 +245,14 @@ class Player extends Group {
     }
   }
 
-  checkGround() {
+  checkGround(jumpDuration) {
     for (const checkOffset of this.groundChecks) {
       const checkPos = this.position.clone().add(checkOffset);
       const tile = this.scene.getTileAt(checkPos.x, checkPos.y);
       const collisionType = TileData.getCollisionType(tile);
       if (collisionType == 1) {
         if (!this.grounded) {
-          this.particleManager.createDust(4, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
+          this.particleManager.createDust(3, this.feetBox, this.position, new Vector3(0, 0.1, 0), true, 0xffffff);
         }
         return true;
       }
@@ -364,7 +364,8 @@ class Player extends Group {
     }
     this.physicsIncrement(5, 1/(5*60));
 
-    this.grounded = this.checkGround();
+    const jumpDuration = time - this.jumpStartTime;
+    this.grounded = this.checkGround(jumpDuration);
     this.rightWall = this.checkRightWall();
     this.leftWall = this.checkLeftWall();
 
@@ -390,12 +391,18 @@ class Player extends Group {
       this.scene.add(sprite);
       this.scene.setTileAt(checkPos.x, checkPos.y, 6);
 
+      SceneManager.chests+=1;
+      document.getElementById('chest').innerHTML = String(SceneManager.chests);
+
       AudioManager.playSound(6, 3, 0.4);
     }
     if (spikeType != 0) {
       AudioManager.playSound(1, 1, 0.75);
+      this.velocity = new Vector3();
       this.particleManager.createDust(20, this.boundingBox, this.position, new Vector3(0.25, 0, 0), true, 0x9f0000);
-      this.position.set(2, -13, 2);
+      this.position.set(this.start.x, this.start.y, this.start.z);
+      SceneManager.deaths+=1;
+      document.getElementById('death').innerHTML = String(SceneManager.deaths);
       return;
     }
 

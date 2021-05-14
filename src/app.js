@@ -6,6 +6,7 @@
  *
  */
 import { SceneManager, AudioManager, Keyboard } from 'classes';
+import { timeHTML, timeToString } from './classes/htmlManager.js'
 
 
 
@@ -13,6 +14,7 @@ import { SceneManager, AudioManager, Keyboard } from 'classes';
 SceneManager.initialize();
 AudioManager.initialize();
 
+timeHTML();
 
 // Not sure what these options are lol, they came in the starter code -Raiden
 // Set up renderer, canvas, and minor CSS adjustments
@@ -24,13 +26,22 @@ document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 
+document.getElementById('death').innerHTML = String(0)
+document.getElementById('chest').innerHTML = String(0)
+
+
 
 // Main loop. Run the current scene specified by the SceneManager
 const gameLoop = (time) => {
+  if (startTime == undefined)
+  var startTime = 0.0;
+document.getElementById('time').innerHTML = timeToString(time, startTime);
+
   time /= 1000;
 
   SceneManager.runScene(time);
   AudioManager.update(time);
+
 
   window.requestAnimationFrame(gameLoop);
 };

@@ -58,7 +58,7 @@ class ParticleManager{
             vert.x = Math.random() * scene.tileWidth;
         }
         vert.y = vert.y - 0.025;
-        vert.x += (Math.random()*Math.cos(this.time* i/100) - 0.3) * 0.02
+        vert.x += (Math.random()*Math.cos(this.time* i/100000) - 0.3) * 0.02
         }
         particleSystem.geometry.verticesNeedUpdate = true;
         particleSystem.rotation.y -= .001 * this.deltaTime;

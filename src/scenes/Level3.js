@@ -1,23 +1,23 @@
-import { Scene, Color, OrthographicCamera, Vector3, Box3 } from 'three';
+import { Scene, Color, OrthographicCamera, Vector3, Box3, DirectionalLight } from 'three';
 import { TextureLoader, SpriteMaterial, Sprite, RepeatWrapping, NearestFilter } from 'three';
 import { TileData, SceneManager } from 'classes';
 import { Player } from 'objects';
-// import { Snowflake } from 'images';
-
 
 class Level0 extends Scene {
     constructor() {
         // Call parent Scene() constructor
         super();
 
-        this.time = undefined;
-
         this.tileWidth = 36;
-        this.tileHeight = 15;
+        this.tileHeight = 30;
 
         // Set up camera. Camera is tied to the scene itself so we can have different
         // levels of different sizes or custom camera code
         this.camera = new OrthographicCamera();
+
+        var light = new DirectionalLight( 0xffffff );
+        light.position.set( 1, -1, 1 ).normalize();
+        this.add(light);
 
         this.camera.position.set(0.5*this.tileWidth, -0.5*this.tileHeight, 10);
         this.camera.lookAt(new Vector3(0.5*this.tileWidth, -0.5*this.tileHeight, 0));
@@ -47,21 +47,33 @@ class Level0 extends Scene {
         this.player = undefined;
 
         this.tiles =[
-          [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
-          [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 1, 0,14,14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-          [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0,15, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-          [0, 0, 0, 0, 2, 0, 0, 0, 1, 1, 1, 1, 0, 0,15, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-          [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 1, 0, 0, 4, 4, 0, 0, 1, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 2],
-          [0, 0, 0, 0,11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 1, 1,13, 0, 0, 0, 0, 0, 1, 8, 8, 8, 8, 8, 0, 0, 0, 2],
-          [0, 0, 0, 0, 0,11, 1,13, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 1, 1,13, 0, 0, 0, 0, 1, 8, 0, 0, 0, 0, 0, 1, 0, 2, 1],
-          [0, 0, 0, 0, 0, 0,11,13, 0, 0, 0, 4, 4, 0, 0, 0, 0,15, 1, 1, 8, 8, 8, 8, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1],
-          [7, 7, 0, 0, 0, 0, 0,11, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0, 0, 0, 8, 8, 0, 0, 0, 0, 0, 0, 7, 0, 2, 1],
-          [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,14,14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 1, 0, 1, 1],
-          [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1],
-          [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1,13, 0, 0, 0, 8, 8],
-          [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1,13, 0, 0, 0, 0, 0],
-          [1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 1, 1, 1, 1, 1, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,13, 0, 0, 0, 0, 0],
-          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,1,1,1,1,3,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [0,0,0,0,0,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,1,1,1,3,0,0,0],
+          [0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,3,0,0,0,0,0,0,0,2,1,1,1,1,1,3,0,0,0],
+          [1,1,1,1,1,3,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,2],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [1,1,1,1,3,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,2,1],
+          [3,0,0,0,0,0,0,0,2,1,1,3,0,0,0,2,1,1,3,0,0,0,0,0,0,0,0,0,2,1,1,1,3,0,0,0],
+          [3,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,3,0,0,0,0,0,0,0,2,1,1,1,1,1,3,0,0,0]
         ];
 
         // Create level map
@@ -69,8 +81,7 @@ class Level0 extends Scene {
 
         // Load in player at position 10, 10. Player constructor handles everything
         this.player = new Player(this);
-        this.player.start = new Vector3(1, -7.5, 2)
-        this.player.position.set(this.player.start.x, this.player.start.y, this.player.start.z);
+        this.player.position.set(2, -13, 2);
     }
 
     // return the integer tile type at an unrounded position
@@ -81,18 +92,6 @@ class Level0 extends Scene {
         return -1;
       }
       else {
-        return this.tiles[roundY][roundX];
-      }
-    }
-
-    setTileAt(x, y, val) {
-      const roundX = Math.floor(x);
-      const roundY = Math.floor(-y);
-      if (roundX < 0 || roundX >= this.tileWidth || roundY < 0 || roundY >= this.tileHeight) {
-        return -1;
-      }
-      else {
-        this.tiles[roundY][roundX] = val
         return this.tiles[roundY][roundX];
       }
     }
@@ -117,17 +116,11 @@ class Level0 extends Scene {
         for (let j = 0; j < this.tiles[0].length; j++) {
           // grab the material for the given tile using the TileData class (very easy)
           const sprite = new Sprite(TileData.getMaterial(this.tiles[i][j]));
-          sprite.name = String(i) + ' ' + String(j);
-          const setFront = TileData.getCollisionType(this.tiles[i][j])
+
           // tile position is negative in the y-axis... we may want to change
           // this early on, but for now it makes it so that the level matches the
           // array specified by "tiles"
-          if (setFront > 0) {
-            sprite.position.set(j + 0.5, -i - 0.5, 0.5);
-          }
-          else {
-            sprite.position.set(j + 0.5, -i - 0.5, 0);
-          }
+          sprite.position.set(j + 0.5, -i - 0.5, 0);
           this.add(sprite);
         }
       }
@@ -152,17 +145,10 @@ class Level0 extends Scene {
         for (const obj of this.updateList) {
             obj.update(time);
         }
-        this.time = time;
-
         if (this.player.position.x < 0.5) {
           this.player.position.x = 1;
           this.player.velocity = new Vector3();
           SceneManager.switchScene(0);
-        }
-        if (this.player.position.x > 35.5) {
-          this.player.position.x = 35;
-          this.player.velocity = new Vector3();
-          SceneManager.switchScene(2);
         }
     }
 

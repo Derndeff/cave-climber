@@ -58,10 +58,10 @@ class Level0 extends Scene {
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,14,14, 0, 0, 0, 0, 0, 0, 0,15, 2, 3, 0, 0, 2],
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0, 0, 9, 7, 7,10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 2, 3, 0, 9, 1],
           [1, 1, 1, 1, 3, 0, 0, 0, 2, 1, 1, 3, 0, 0,15, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,15, 2, 3, 0, 2, 1],
-          [1, 8, 8, 8,12, 0, 0, 0, 2, 1, 1, 3, 0, 0,15, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 2, 3, 0,11, 8],
-          [3, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 3, 4, 4, 4, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 4, 4, 9, 7, 7, 1, 3, 0, 0, 0],
-          [3, 0, 0, 0, 0, 0, 5, 0, 2, 1, 1, 1, 7, 7, 7, 1, 1, 1, 3, 4, 4, 4, 4, 4, 4, 4, 9, 7, 1, 1, 1, 1, 3, 0, 0, 0], 
-          [1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7]
+          [8, 8, 8, 8,12, 0, 0, 0, 2, 1, 1, 3, 0, 0,15, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 2, 3, 0,11, 8],
+          [0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 3, 4, 4, 4, 2, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 4, 4, 9, 7, 7, 1, 3, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 5, 0, 2, 1, 1, 1, 7, 7, 7, 1, 1, 1, 3, 4, 4, 4, 4, 4, 4, 4, 9, 7, 1, 1, 1, 1, 3, 0, 0, 0], 
+          [7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7]
         ];
 
         // Create level map
@@ -69,7 +69,8 @@ class Level0 extends Scene {
 
         // Load in player at position 10, 10. Player constructor handles everything
         this.player = new Player(this);
-        this.player.position.set(2, -13, 2);
+        this.player.start = new Vector3(1, -13.5, 2)
+        this.player.position.set(this.player.start.x, this.player.start.y, this.player.start.z);
 
     }
 
@@ -156,8 +157,13 @@ class Level0 extends Scene {
 
         if (this.player.position.x > 35.5) {
           this.player.position.x = 35;
-          SceneManager.switchScene(1);
+          SceneManager.switchScene(3);
         }
+        if (this.player.position.x < 0.5) {
+            this.player.position.x = 1;
+            this.player.velocity = new Vector3();
+            SceneManager.switchScene(1);
+          }
     }
 
     // Called when the scene is loaded in. We want to link event listeners, but
